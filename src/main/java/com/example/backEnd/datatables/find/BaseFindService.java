@@ -1,5 +1,7 @@
-package com.example.backEnd.datatables.filter;
+package com.example.backEnd.datatables.find;
 
+import com.example.backEnd.datatables.filter.AbstractDataService;
+import com.example.backEnd.datatables.filter.MasterFilterType;
 import com.example.backEnd.datatables.mapping.DataTablesInput;
 import com.example.backEnd.datatables.mapping.DataTablesOutput;
 import com.example.backEnd.datatables.mapping.ExpressionTypeAlias;

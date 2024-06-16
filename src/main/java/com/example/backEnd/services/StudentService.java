@@ -17,20 +17,28 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType.NUM;
+import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType.STR;
+
 @Slf4j
 @Service
 public class StudentService
         extends AbstractMasterService<Student, StudentProjection> {
 
     private static final ExpressionTypeAlias table;
+    private static final QStudent qStudent = QStudent.student;
 
     static {
         Map<String, Pair<Expression<?>, ColumnValueType>> map = new HashMap<>();
+        map.put("id", Pair.of(qStudent.id, NUM));
+        map.put("firstName", Pair.of(qStudent.firstName, STR));
+        map.put("lastName", Pair.of(qStudent.lastName, STR));
+        map.put("age", Pair.of(qStudent.age, NUM));
         table = new ExpressionTypeAlias(map, StudentProjection.class);
     }
 
 
     public StudentService(EntityManager entityManager, StudentRepository studentRepository) {
-        super(QStudent.student, entityManager, studentRepository, table);
+        super(qStudent, entityManager, studentRepository, table);
     }
 }

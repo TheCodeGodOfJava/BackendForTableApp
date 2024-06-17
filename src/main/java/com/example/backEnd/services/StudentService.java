@@ -40,5 +40,10 @@ public class StudentService
 
     public StudentService(EntityManager entityManager, StudentRepository studentRepository) {
         super(qStudent, entityManager, studentRepository, table);
+
+        addFieldPath("id", qStudent.id);
+        addFieldPath("firstName", qStudent.firstName);
+        addFieldPath("lastName", qStudent.lastName);
+        addFieldPath("age", qStudent.age);
     }
 }

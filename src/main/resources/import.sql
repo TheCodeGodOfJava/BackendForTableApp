@@ -998,3 +998,7 @@ insert into students (first_name, last_name, age) values ('Koenraad', 'Newdick',
 insert into students (first_name, last_name, age) values ('Mariska', 'McOnie', 45);
 insert into students (first_name, last_name, age) values ('Gail', 'Lambdon', 34);
 insert into students (first_name, last_name, age) values ('Muhammad', 'Bednell', 46);
+insert into students (first_name, last_name, age) values ('Adan', 'Fisk', 46);
+insert into students (first_name, last_name, age) values ('Adan', 'Fisk', 59);
+insert into students (first_name, last_name, age) values ('Hank', 'Fisk', 46);
+insert into students (first_name, last_name, age) values ('Mary', 'Fisk', 41);

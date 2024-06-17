@@ -10,7 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collection;
 
 @RequiredArgsConstructor
 @RestController
@@ -25,5 +28,15 @@ public class StudentController {
 
         return new ResponseEntity<>(
                 studentService.findAll(null, null, false, input), HttpStatus.OK);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Collection<?>> searchByTermAndField(
+            @RequestParam String field,
+            @RequestParam String term) {
+
+        Collection<?> results =
+                studentService.findByFieldAndTerm(null, null, field, term, null);
+        return ResponseEntity.ok(results);
     }
 }

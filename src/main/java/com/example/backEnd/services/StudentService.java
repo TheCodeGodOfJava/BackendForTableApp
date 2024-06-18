@@ -10,12 +10,14 @@ import com.example.backEnd.models.projections.StudentProjection;
 import com.example.backEnd.repositories.StudentRepository;
 import com.querydsl.core.types.Expression;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType.NUM;
@@ -52,9 +54,15 @@ public class StudentService
         this.modelMapper = modelMapper;
     }
 
+    @Transactional
     public StudentProjection save(StudentProjection studentProjection) {
         var student = modelMapper.map(studentProjection, Student.class);
         student = this.studentRepository.save(student);
         return this.modelMapper.map(student, StudentProjection.class);
+    }
+
+    @Transactional
+    public void removeAll(List<Long> ids) {
+        studentRepository.deleteAllById(ids);
     }
 }

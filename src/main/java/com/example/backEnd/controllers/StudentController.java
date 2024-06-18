@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -45,5 +46,11 @@ public class StudentController {
         var optional = Optional.ofNullable(studentProjection);
         var httpStatus = optional.map(detail -> HttpStatus.CREATED).orElse(HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(projection, httpStatus);
+    }
+
+    @DeleteMapping("/remove")
+    public ResponseEntity<Void> remove(@RequestBody List<Long> ids) {
+        studentService.removeAll(ids);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

@@ -2,17 +2,24 @@ package controller;
 
 import com.example.backEnd.controllers.StudentController;
 import com.example.backEnd.datatables.mapping.DataTablesOutput;
+import com.example.backEnd.models.projections.StudentProjection;
 import com.example.backEnd.services.StudentService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -73,5 +80,56 @@ class StudentControllerTest {
         // Verifying that the service method was called exactly once
         verify(service, times(1)).findByFieldAndTerm(any(), any(), eq(field), eq(term), any());
         verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    void saveStudent() throws Exception {
+        // Mock student projection to be saved
+        var studentProjection = new StudentProjection();
+        studentProjection.setId(1L);
+        studentProjection.setFirstName("John Doe");
+
+        // Mocking service method
+        when(service.save(any(StudentProjection.class))).thenReturn(studentProjection);
+
+        // Convert student projection to JSON
+        ObjectMapper objectMapper = new ObjectMapper();
+        String studentJson = objectMapper.writeValueAsString(studentProjection);
+
+        // Perform POST request to save student
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/students/save")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(studentJson));
+
+        // Verify HTTP status
+        result.andExpect(status().isCreated());
+
+        // Verify that service method was called once
+        verify(service).save(any(StudentProjection.class));
+    }
+
+
+    @Test
+    void removeStudents() throws Exception {
+        // Mock IDs to be removed
+        List<Long> idsToRemove = Arrays.asList(1L, 2L, 3L);
+
+        // Mocking service method
+        doNothing().when(service).removeAll(idsToRemove);
+
+        // Convert IDs to JSON
+        ObjectMapper objectMapper = new ObjectMapper();
+        String idsJson = objectMapper.writeValueAsString(idsToRemove);
+
+        // Perform DELETE request to remove students
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.delete("/students/remove")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(idsJson));
+
+        // Verify HTTP status
+        result.andExpect(status().isOk());
+
+        // Verify that service method was called once with correct arguments
+        verify(service).removeAll(idsToRemove);
     }
 }

@@ -14,11 +14,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,6 +51,28 @@ class StudentControllerTest {
 
         // Verifying that the service method was called exactly once
         verify(service, times(1)).findAll(any(), any(), any(), any());
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    void searchByTermAndField() throws Exception {
+        String field = "name";
+        String term = "John";
+
+        // Stubbing the service method
+        when(service.findByFieldAndTerm(any(), any(), eq(field), eq(term), any()))
+                .thenReturn(Collections.emptyList());
+
+        // Performing the mock MVC request
+        mockMvc.perform(get("/students/filter")
+                        .param("field", field)
+                        .param("term", term))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0))); // Expecting an empty list
+
+        // Verifying that the service method was called exactly once
+        verify(service, times(1)).findByFieldAndTerm(any(), any(), eq(field), eq(term), any());
         verifyNoMoreInteractions(service);
     }
 }

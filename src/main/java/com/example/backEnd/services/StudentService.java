@@ -11,6 +11,7 @@ import com.example.backEnd.repositories.StudentRepository;
 import com.querydsl.core.types.Expression;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class StudentService
 
     private static final ExpressionTypeAlias table;
     private static final QStudent qStudent = QStudent.student;
+    private final StudentRepository studentRepository;
 
     static {
         Map<String, Pair<Expression<?>, ColumnValueType>> map = new HashMap<>();
@@ -37,13 +39,22 @@ public class StudentService
         table = new ExpressionTypeAlias(map, StudentProjection.class);
     }
 
+    private final ModelMapper modelMapper;
 
-    public StudentService(EntityManager entityManager, StudentRepository studentRepository) {
+
+    public StudentService(EntityManager entityManager, StudentRepository studentRepository, ModelMapper modelMapper) {
         super(qStudent, entityManager, studentRepository, table);
-
+        this.studentRepository = studentRepository;
         addFieldPath("id", qStudent.id);
         addFieldPath("firstName", qStudent.firstName);
         addFieldPath("lastName", qStudent.lastName);
         addFieldPath("age", qStudent.age);
+        this.modelMapper = modelMapper;
+    }
+
+    public StudentProjection save(StudentProjection studentProjection) {
+        var student = modelMapper.map(studentProjection, Student.class);
+        student = this.studentRepository.save(student);
+        return this.modelMapper.map(student, StudentProjection.class);
     }
 }

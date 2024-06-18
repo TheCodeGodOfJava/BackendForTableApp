@@ -8,12 +8,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -38,5 +36,14 @@ public class StudentController {
         Collection<?> results =
                 studentService.findByFieldAndTerm(null, null, field, term, null);
         return ResponseEntity.ok(results);
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<StudentProjection> save(
+            @RequestBody StudentProjection studentProjection) {
+        var projection = studentService.save(studentProjection);
+        var optional = Optional.ofNullable(studentProjection);
+        var httpStatus = optional.map(detail -> HttpStatus.CREATED).orElse(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(projection, httpStatus);
     }
 }

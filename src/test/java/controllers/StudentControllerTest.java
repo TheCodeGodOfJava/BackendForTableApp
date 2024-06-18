@@ -1,4 +1,4 @@
-package controller;
+package controllers;
 
 import com.example.backEnd.controllers.StudentController;
 import com.example.backEnd.datatables.mapping.DataTablesOutput;

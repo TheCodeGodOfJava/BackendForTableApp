@@ -56,7 +56,7 @@ public class ExpressionColumnFilter {
     }
 
     public ExpressionColumnFilter(String filterValue) {
-        filterValues = filterValue.split("\\+");
+        filterValues = filterValue.split(",");
     }
 
     public Predicate createPredicate(Pair<Expression<?>, ColumnValueType> pair) {

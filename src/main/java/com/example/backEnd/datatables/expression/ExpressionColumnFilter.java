@@ -40,7 +40,7 @@ public class ExpressionColumnFilter {
                 ColumnValueType.NUM,
                 new NumberMultiPredicate(),
                 ColumnValueType.BOOLEAN,
-                new BooleanMultiPredicate());
+                new BooleanSinglePredicate());
         map = Map.of(
                 ColumnValuePresence.SINGLE,
                 single,

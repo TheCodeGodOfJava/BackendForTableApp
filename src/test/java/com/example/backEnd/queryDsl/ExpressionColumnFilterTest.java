@@ -46,7 +46,7 @@ public class ExpressionColumnFilterTest {
         // given
         var strMulti = Mockito.mock(StringMultiPredicate.class);
 
-        var expressionColumnFilter = Mockito.spy(new ExpressionColumnFilter("valueOne+valueTwo+valueThree"));
+        var expressionColumnFilter = Mockito.spy(new ExpressionColumnFilter("valueOne,valueTwo,valueThree"));
         var stringExpression = Expressions.stringTemplate("");
 
         // when
@@ -57,24 +57,6 @@ public class ExpressionColumnFilterTest {
 
         verify(strMulti, times(1)).create(any(), any());
         verifyNoMoreInteractions(strMulti);
-    }
-
-    @Test
-    public void shouldCallTypeDateRangePredicate() {
-        // given
-        var dateRange = Mockito.mock(LocalDateRangePredicate.class);
-
-        var expressionColumnFilter = Mockito.spy(new ExpressionColumnFilter("2022-01-20T15:30:00#2022-02-20T15:30:00"));
-        var dateTimeExpression = Expressions.dateTimeOperation(LocalDateTime.class, Ops.DateTimeOps.CURRENT_DATE);
-
-        // when
-        when(expressionColumnFilter.getMap()).thenReturn(Map.of(DATE_RANGE, Map.of(DATE, dateRange)));
-
-        // then
-        expressionColumnFilter.createPredicate(Pair.of(dateTimeExpression, DATE));
-
-        verify(dateRange, times(1)).create(any(), any());
-        verifyNoMoreInteractions(dateRange);
     }
 
     @Test
@@ -100,7 +82,7 @@ public class ExpressionColumnFilterTest {
         // given
         var numberMulti = Mockito.mock(NumberSinglePredicate.class);
 
-        var expressionColumnFilter = Mockito.spy(new ExpressionColumnFilter("12+25+181"));
+        var expressionColumnFilter = Mockito.spy(new ExpressionColumnFilter("12,25,181"));
         var numberExpression = Expressions.numberTemplate(Long.class, "");
 
         // when

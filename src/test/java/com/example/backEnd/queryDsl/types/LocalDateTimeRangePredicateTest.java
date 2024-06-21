@@ -1,6 +1,6 @@
 package com.example.backEnd.queryDsl.types;
 
-import com.example.backEnd.datatables.expression.queryTypeColumns.specificPredicates.LocalDateTimeRangePredicate;
+import com.example.backEnd.datatables.expression.queryTypeColumns.specificPredicates.LocalDateRangePredicate;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
@@ -17,14 +17,15 @@ public class LocalDateTimeRangePredicateTest {
     public void shouldCreatePredicateForDateRange() {
 
         // given
-        String[] values = {"2022-01-20T15:30:00#2022-02-20T15:30:00"};
+        String[] values = {"{\"start\":\"2024-06-01T21:00:00.000Z\",\"end\":\"2024-06-19T21:00:00.000Z\"}"};
+
 
         var dateTimeExpression = Expressions.dateTimeOperation(LocalDateTime.class, Ops.DateTimeOps.CURRENT_DATE);
 
         // when
-        Predicate predicate = new LocalDateTimeRangePredicate().create(values, dateTimeExpression);
+        Predicate predicate = new LocalDateRangePredicate().create(values, dateTimeExpression);
 
         assertNotNull(predicate);
-        assertEquals("current_date() between 2022-01-20T00:00 and 2022-02-20T23:59", predicate.toString());
+        assertEquals("current_date() between 2024-06-01 and 2024-06-19", predicate.toString());
     }
 }

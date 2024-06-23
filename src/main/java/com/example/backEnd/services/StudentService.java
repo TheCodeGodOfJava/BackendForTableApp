@@ -20,8 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType.NUM;
-import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType.STR;
+import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType.*;
 
 @Slf4j
 @Service
@@ -38,6 +37,9 @@ public class StudentService
         map.put("firstName", Pair.of(qStudent.firstName, STR));
         map.put("lastName", Pair.of(qStudent.lastName, STR));
         map.put("age", Pair.of(qStudent.age, NUM));
+        map.put("gender", Pair.of(qStudent.gender, BOOLEAN));
+        map.put("enrollDate", Pair.of(qStudent.enrollDate, DATE_TIME));
+        map.put("about", Pair.of(qStudent.about, STR));
         table = new ExpressionTypeAlias(map, StudentProjection.class);
     }
 

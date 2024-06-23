@@ -6,6 +6,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Entity
@@ -19,4 +21,13 @@ public class Student extends AbstractEntity {
 
     @Column()
     private Integer age;
+
+    @Column()
+    private Boolean gender = Boolean.TRUE;
+
+    @Column(name = "enroll_date")
+    private LocalDate enrollDate;
+
+    @Column(columnDefinition = "text")
+    private String about;
 }

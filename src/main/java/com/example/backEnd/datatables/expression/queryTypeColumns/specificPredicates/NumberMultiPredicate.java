@@ -4,9 +4,8 @@ import com.example.backEnd.datatables.expression.queryTypeColumns.specificPredic
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
-import org.springframework.util.NumberUtils;
-
 import java.util.Arrays;
+import org.springframework.util.NumberUtils;
 
 public final class NumberMultiPredicate implements IPredicate {
 

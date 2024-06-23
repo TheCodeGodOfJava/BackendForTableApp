@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class ExpressionPredicateBuilderDto {
 
-    private Long numberField;
+  private Long numberField;
 
-    private String stringField;
+  private String stringField;
 }

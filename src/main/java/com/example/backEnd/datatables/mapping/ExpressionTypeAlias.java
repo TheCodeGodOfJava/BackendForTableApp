@@ -3,21 +3,18 @@ package com.example.backEnd.datatables.mapping;
 import com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType;
 import com.querydsl.core.types.Expression;
 import jakarta.el.PropertyNotFoundException;
-import lombok.Getter;
-import org.springframework.data.util.Pair;
-
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import org.springframework.data.util.Pair;
 
 public class ExpressionTypeAlias {
 
+    private final Class<?> projection;
+    private final Set<String> fieldNames;
     @Getter
     Map<String, Pair<Expression<?>, ColumnValueType>> aliasPathMap;
-
-    private final Class<?> projection;
-
-    private final Set<String> fieldNames;
 
     public ExpressionTypeAlias(Map<String, Pair<Expression<?>, ColumnValueType>> aliasPathMap, Class<?> projection) {
 
@@ -35,15 +32,15 @@ public class ExpressionTypeAlias {
         }
     }
 
-    private Set<String> getUnmappedFields() {
-        Set<String> aliases = aliasPathMap.keySet();
-        return aliases.stream().filter(alias -> !fieldNames.contains(alias)).collect(Collectors.toSet());
-    }
-
     private static List<Field> getAllFields(List<Field> fields, Class<?> type) {
         fields.addAll(Arrays.asList(type.getDeclaredFields()));
         Optional.ofNullable(type.getSuperclass()).ifPresent(s -> getAllFields(fields, type.getSuperclass()));
         return fields;
+    }
+
+    private Set<String> getUnmappedFields() {
+        Set<String> aliases = aliasPathMap.keySet();
+        return aliases.stream().filter(alias -> !fieldNames.contains(alias)).collect(Collectors.toSet());
     }
 
     public Pair<Expression<?>, ColumnValueType> getExpressionAndTypeByAlias(String alias) {

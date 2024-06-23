@@ -10,18 +10,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class StringSinglePredicateTest {
 
-    @Test
-    public void shouldCreatePredicateForMultiStringValue() {
+  @Test
+  public void shouldCreatePredicateForMultiStringValue() {
 
-        // given
-        String[] values = {"firstValue"};
+    // given
+    String[] values = {"firstValue"};
 
-        var stringExpression = Expressions.stringTemplate("");
+    var stringExpression = Expressions.stringTemplate("");
 
-        // when
-        Predicate predicate = new StringSinglePredicate().create(values, stringExpression);
+    // when
+    Predicate predicate = new StringSinglePredicate().create(values, stringExpression);
 
-        assertNotNull(predicate);
-        assertEquals(" like %firstValue%", predicate.toString());
-    }
+    assertNotNull(predicate);
+    assertEquals(" like %firstValue%", predicate.toString());
+  }
 }

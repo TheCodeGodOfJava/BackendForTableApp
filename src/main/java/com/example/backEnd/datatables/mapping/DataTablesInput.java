@@ -14,13 +14,13 @@ import java.util.List;
 @AllArgsConstructor
 public class DataTablesInput {
 
-    @NotNull
-    @Min(0)
-    private Integer start = 0;
+  @NotNull
+  @Min(0)
+  private Integer start = 0;
 
-    @NotNull
-    @Min(-1)
-    private Integer length = 0;
+  @NotNull
+  @Min(-1)
+  private Integer length = 0;
 
-    private List<Column> columns = new ArrayList<>();
+  private List<Column> columns = new ArrayList<>();
 }

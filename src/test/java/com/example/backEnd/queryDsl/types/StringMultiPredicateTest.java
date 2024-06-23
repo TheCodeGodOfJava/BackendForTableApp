@@ -10,18 +10,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class StringMultiPredicateTest {
 
-    @Test
-    public void shouldCreatePredicateForMultiStringValue() {
+  @Test
+  public void shouldCreatePredicateForMultiStringValue() {
 
-        // given
-        String[] values = {"firstValue", "secondValue", "thirdValue"};
+    // given
+    String[] values = {"firstValue", "secondValue", "thirdValue"};
 
-        var stringExpression = Expressions.stringTemplate("");
+    var stringExpression = Expressions.stringTemplate("");
 
-        // when
-        Predicate predicate = new StringMultiPredicate().create(values, stringExpression);
+    // when
+    Predicate predicate = new StringMultiPredicate().create(values, stringExpression);
 
-        assertNotNull(predicate);
-        assertEquals(" like %firstValue% ||  like %secondValue% ||  like %thirdValue%", predicate.toString());
-    }
+    assertNotNull(predicate);
+    assertEquals(
+        " like %firstValue% ||  like %secondValue% ||  like %thirdValue%", predicate.toString());
+  }
 }

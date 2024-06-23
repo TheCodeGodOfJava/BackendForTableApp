@@ -1,5 +1,9 @@
 package com.example.backEnd.queryDsl.find;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import com.example.backEnd.datatables.find.BaseFindService;
 import com.example.backEnd.datatables.mapping.DataTablesInput;
 import com.example.backEnd.datatables.mapping.DataTablesOutput;
@@ -13,10 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 public class BaseFindServiceTest {
 

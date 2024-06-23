@@ -9,11 +9,11 @@ import java.time.LocalTime;
 
 public final class LocalTimeSinglePredicate implements IPredicate {
 
-    @Override
-    public Predicate create(String[] value, Expression<?> expression) {
-        String[] dateValues = value[0].split("#");
+  @Override
+  public Predicate create(String[] value, Expression<?> expression) {
+    String[] dateValues = value[0].split("#");
 
-        return Expressions.dateTimeTemplate(LocalTime.class, "{0}", expression)
-                .between(LocalTime.parse(dateValues[0]), LocalTime.parse(dateValues[1]));
-    }
+    return Expressions.dateTimeTemplate(LocalTime.class, "{0}", expression)
+        .between(LocalTime.parse(dateValues[0]), LocalTime.parse(dateValues[1]));
+  }
 }

@@ -3,11 +3,10 @@ package com.example.backEnd.datatables.filter;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import lombok.Getter;
 
 @Getter
 public abstract class AbstractDataService {

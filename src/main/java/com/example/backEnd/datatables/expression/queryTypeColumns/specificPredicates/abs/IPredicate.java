@@ -5,5 +5,5 @@ import com.querydsl.core.types.Predicate;
 
 @FunctionalInterface
 public interface IPredicate {
-    Predicate create(String[] values, Expression<?> expression);
+  Predicate create(String[] values, Expression<?> expression);
 }

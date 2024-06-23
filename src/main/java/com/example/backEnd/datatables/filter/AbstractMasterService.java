@@ -9,7 +9,7 @@ import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.StringPath;
 import jakarta.persistence.EntityManager;
-
+import java.util.Map;
 import java.util.function.Function;
 
 public abstract class AbstractMasterService<T, P> extends AbstractMasterFilterService<T> {
@@ -34,10 +34,10 @@ public abstract class AbstractMasterService<T, P> extends AbstractMasterFilterSe
             EntityManager entityManager,
             QDataTablesRepository<T, Long> repository,
             ExpressionTypeAlias table,
-            StringPath dependencyPath,
+            Map<String, StringPath> dependencyMap,
             EntityPath<?>... entityJoins) {
 
-        super(entityPath, entityManager, dependencyPath);
+        super(entityPath, entityManager, dependencyMap);
         findService = new BaseFindService<>(repository, table, entityManager);
         this.entityJoins = entityJoins;
     }

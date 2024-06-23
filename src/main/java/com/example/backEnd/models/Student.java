@@ -3,10 +3,9 @@ package com.example.backEnd.models;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -30,4 +29,10 @@ public class Student extends AbstractEntity {
 
     @Column(columnDefinition = "text")
     private String about;
+
+    @Column(name = "state")
+    private String state;
+
+    @Column(name = "city")
+    private String city;
 }

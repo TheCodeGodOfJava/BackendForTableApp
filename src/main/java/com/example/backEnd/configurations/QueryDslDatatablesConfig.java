@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @EnableJpaRepositories(
-        repositoryFactoryBeanClass = QDataTablesRepositoryFactoryBean.class,
-        basePackages = {"com.example.backEnd.repositories"})
+    repositoryFactoryBeanClass = QDataTablesRepositoryFactoryBean.class,
+    basePackages = {"com.example.backEnd.repositories"})
 public class QueryDslDatatablesConfig {}

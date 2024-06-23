@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Column {
 
-    private String orderDirection;
+  private String orderDirection;
 
-    private String search;
+  private String search;
 
-    private String alias;
+  private String alias;
 }

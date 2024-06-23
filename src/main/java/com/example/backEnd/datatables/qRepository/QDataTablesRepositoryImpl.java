@@ -10,11 +10,10 @@ import com.querydsl.core.types.FactoryExpression;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import jakarta.persistence.EntityManager;
+import java.io.Serializable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
-
-import java.io.Serializable;
 
 @Slf4j
 public class QDataTablesRepositoryImpl<T, ID extends Serializable> extends CustomQueryDslJpaRepository<T, ID>

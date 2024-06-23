@@ -10,18 +10,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class NumberSinglePredicateTest {
 
-    @Test
-    public void shouldCreatePredicateForSingleNumberValue() {
+  @Test
+  public void shouldCreatePredicateForSingleNumberValue() {
 
-        // given
-        String[] values = {"1"};
+    // given
+    String[] values = {"1"};
 
-        var numberExpression = Expressions.numberTemplate(Long.class, "");
+    var numberExpression = Expressions.numberTemplate(Long.class, "");
 
-        // when
-        Predicate predicate = new NumberSinglePredicate().create(values, numberExpression);
+    // when
+    Predicate predicate = new NumberSinglePredicate().create(values, numberExpression);
 
-        assertNotNull(predicate);
-        assertEquals(" = 1", predicate.toString());
-    }
+    assertNotNull(predicate);
+    assertEquals(" = 1", predicate.toString());
+  }
 }

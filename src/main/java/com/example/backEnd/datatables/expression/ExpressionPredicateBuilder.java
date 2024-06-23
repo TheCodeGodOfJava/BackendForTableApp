@@ -8,11 +8,10 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
+import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.QSort;
 import org.springframework.util.StringUtils;
-
-import java.util.Optional;
 
 public record ExpressionPredicateBuilder(ExpressionTypeAlias expressionTypeAlias, DataTablesInput input) {
 

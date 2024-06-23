@@ -1,15 +1,14 @@
 package com.example.backEnd.queryDsl.types;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.example.backEnd.datatables.expression.queryTypeColumns.specificPredicates.LocalDateRangePredicate;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
-import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Test;
 
 public class LocalDateTimeRangePredicateTest {
 

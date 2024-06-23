@@ -8,9 +8,9 @@ import org.springframework.util.NumberUtils;
 
 public final class NumberSinglePredicate implements IPredicate {
 
-    @Override
-    public Predicate create(String[] values, Expression<?> expression) {
-        return Expressions.numberTemplate(Long.class, "{0}", expression)
-                .eq(NumberUtils.parseNumber(values[0].trim(), Long.class));
-    }
+  @Override
+  public Predicate create(String[] values, Expression<?> expression) {
+    return Expressions.numberTemplate(Long.class, "{0}", expression)
+        .eq(NumberUtils.parseNumber(values[0].trim(), Long.class));
+  }
 }

@@ -13,18 +13,22 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentProjection {
-    private Long id;
+  private Long id;
 
-    private String firstName;
+  private String firstName;
 
-    private String lastName;
+  private String lastName;
 
-    private Integer age;
+  private Integer age;
 
-    private Boolean gender;
+  private Boolean gender;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private LocalDate enrollDate;
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
+  private LocalDate enrollDate;
 
-    private String about;
+  private String about;
+
+  private String state;
+
+  private String city;
 }

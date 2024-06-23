@@ -1,23 +1,22 @@
 package com.example.backEnd.queryDsl.builder;
 
 
+import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType.NUM;
+import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType.STR;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.example.backEnd.datatables.expression.ExpressionPredicateBuilder;
 import com.example.backEnd.datatables.mapping.Column;
 import com.example.backEnd.datatables.mapping.DataTablesInput;
 import com.example.backEnd.datatables.mapping.ExpressionTypeAlias;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
-
-import java.util.List;
-import java.util.Map;
-
-import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType.NUM;
-import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType.STR;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpressionPredicateBuilderTest {
 

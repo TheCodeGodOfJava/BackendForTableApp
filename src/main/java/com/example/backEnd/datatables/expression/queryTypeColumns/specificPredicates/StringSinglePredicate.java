@@ -7,8 +7,8 @@ import com.querydsl.core.types.dsl.Expressions;
 
 public final class StringSinglePredicate implements IPredicate {
 
-    @Override
-    public Predicate create(String[] values, Expression<?> expression) {
-        return Expressions.stringTemplate("{0}", expression).like("%" + values[0].trim() + "%");
-    }
+  @Override
+  public Predicate create(String[] values, Expression<?> expression) {
+    return Expressions.stringTemplate("{0}", expression).like("%" + values[0].trim() + "%");
+  }
 }

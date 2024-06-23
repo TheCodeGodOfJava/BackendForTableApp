@@ -8,6 +8,10 @@ import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.AbstractJPAQuery;
 import jakarta.persistence.EntityManager;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +23,6 @@ import org.springframework.data.querydsl.SimpleEntityPathResolver;
 import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.lang.NonNull;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
 public class CustomQueryDslJpaRepository<T, ID extends Serializable> extends SimpleJpaRepository<T, ID>
         implements QuerydslPredicateExecutor<T> {

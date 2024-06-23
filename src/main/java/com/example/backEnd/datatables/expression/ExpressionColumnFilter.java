@@ -6,21 +6,14 @@ import com.example.backEnd.datatables.expression.queryTypeColumns.specificPredic
 import com.example.backEnd.datatables.expression.queryTypeColumns.specificPredicates.abs.IPredicate;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Predicate;
-import org.springframework.data.util.Pair;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.data.util.Pair;
 
 public class ExpressionColumnFilter {
 
-    private final String[] filterValues;
-
     private static final Map<ColumnValuePresence, Map<ColumnValueType, IPredicate>> map;
     private static final Map<ColumnValueType, ColumnValuePresence> columnValuePresenceMap;
-
-    public Map<ColumnValuePresence, Map<ColumnValueType, IPredicate>> getMap() {
-        return map;
-    }
 
     static {
         columnValuePresenceMap = new HashMap<>();
@@ -52,9 +45,15 @@ public class ExpressionColumnFilter {
                 Map.of(ColumnValueType.DATE_TIME, new LocalDateRangePredicate()));
     }
 
+    private final String[] filterValues;
+
     public ExpressionColumnFilter(String filterValue) {
         boolean isObject = filterValue.charAt(0) == '{' && filterValue.charAt(filterValue.length() - 1) == '}';
         filterValues = isObject ? new String[]{filterValue} : filterValue.split(",");
+    }
+
+    public Map<ColumnValuePresence, Map<ColumnValueType, IPredicate>> getMap() {
+        return map;
     }
 
     public Predicate createPredicate(Pair<Expression<?>, ColumnValueType> pair) {

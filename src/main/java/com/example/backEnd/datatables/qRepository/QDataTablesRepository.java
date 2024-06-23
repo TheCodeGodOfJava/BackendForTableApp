@@ -5,11 +5,10 @@ import com.example.backEnd.datatables.mapping.DataTablesOutput;
 import com.example.backEnd.datatables.mapping.ExpressionTypeAlias;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Predicate;
+import java.io.Serializable;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.PagingAndSortingRepository;
-
-import java.io.Serializable;
 
 @NoRepositoryBean
 public interface QDataTablesRepository<T, ID extends Serializable>

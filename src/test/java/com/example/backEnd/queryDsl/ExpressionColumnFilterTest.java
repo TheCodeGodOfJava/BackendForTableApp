@@ -1,24 +1,20 @@
 package com.example.backEnd.queryDsl;
 
+import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValuePresence.*;
+import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType.*;
+import static org.mockito.Mockito.*;
+
 import com.example.backEnd.datatables.expression.ExpressionColumnFilter;
-import com.example.backEnd.datatables.expression.queryTypeColumns.specificPredicates.LocalDateRangePredicate;
 import com.example.backEnd.datatables.expression.queryTypeColumns.specificPredicates.NumberSinglePredicate;
 import com.example.backEnd.datatables.expression.queryTypeColumns.specificPredicates.StringMultiPredicate;
 import com.example.backEnd.datatables.expression.queryTypeColumns.specificPredicates.StringSinglePredicate;
-import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.dsl.Expressions;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.util.Pair;
-
-import java.time.LocalDateTime;
-import java.util.Map;
-
-import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValuePresence.*;
-import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ExpressionColumnFilterTest {

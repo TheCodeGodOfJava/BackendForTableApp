@@ -42,7 +42,7 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
     map.put("city", Pair.of(qStudent.city, STR));
     table = new ExpressionTypeAlias(map, StudentProjection.class);
 
-    dependencyMap.put("state", qStudent.state);
+    dependencyMap.put("city", qStudent.state);
   }
 
   private final StudentRepository studentRepository;

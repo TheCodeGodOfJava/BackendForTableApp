@@ -13,49 +13,55 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.QSort;
 import org.springframework.util.StringUtils;
 
-public record ExpressionPredicateBuilder(ExpressionTypeAlias expressionTypeAlias, DataTablesInput input) {
+public record ExpressionPredicateBuilder(
+    ExpressionTypeAlias expressionTypeAlias, DataTablesInput input) {
 
-    public BooleanBuilder build() {
-        var b = new BooleanBuilder();
-        input.getColumns().stream()
-                .filter(this::filterColumnWithoutSearch)
-                .map(this::createColumnPredicate)
-                .forEach(b::and);
-        return b;
+  public BooleanBuilder build() {
+    var b = new BooleanBuilder();
+    input.getColumns().stream()
+        .filter(this::filterColumnWithoutSearch)
+        .map(this::createColumnPredicate)
+        .forEach(b::and);
+    return b;
+  }
+
+  private Boolean filterColumnWithoutSearch(Column column) {
+    return column != null && StringUtils.hasText(column.getSearch());
+  }
+
+  private Predicate createColumnPredicate(Column column) {
+    var pair = expressionTypeAlias.getExpressionAndTypeByAlias(column.getAlias());
+    return new ExpressionColumnFilter(column.getSearch()).createPredicate(pair);
+  }
+
+  public Pageable createPageable() {
+    if (input.getLength() < 0) {
+      input.setStart(0);
+      input.setLength(Integer.MAX_VALUE);
     }
+    var sort = getOrder().orElse(QSort.unsorted());
+    return new DataTablesPageRequest(input.getStart(), input.getLength(), sort);
+  }
 
-    private Boolean filterColumnWithoutSearch(Column column) {
-        return column != null && StringUtils.hasText(column.getSearch());
-    }
+  private Optional<QSort> getOrder() {
+    return input.getColumns().stream()
+        .filter(column -> column.getOrderDirection() != null)
+        .findFirst()
+        .map(
+            column -> {
+              var pair = expressionTypeAlias.getAliasPathMap().get(column.getAlias());
+              if (pair != null) {
+                var comparableExpressionBase = (ComparableExpressionBase<?>) pair.getFirst();
 
-    private Predicate createColumnPredicate(Column column) {
-        var pair = expressionTypeAlias.getExpressionAndTypeByAlias(column.getAlias());
-        return new ExpressionColumnFilter(column.getSearch()).createPredicate(pair);
-    }
-
-    public Pageable createPageable() {
-        if (input.getLength() < 0) {
-            input.setStart(0);
-            input.setLength(Integer.MAX_VALUE);
-        }
-        var sort = getOrder().orElse(QSort.unsorted());
-        return new DataTablesPageRequest(input.getStart(), input.getLength(), sort);
-    }
-
-    private Optional<QSort> getOrder() {
-        return input.getColumns().stream()
-                .filter(column -> column.getOrderDirection() != null)
-                .findFirst()
-                .map(column -> {
-                    var pair = expressionTypeAlias.getAliasPathMap().get(column.getAlias());
-                    var comparableExpressionBase = (ComparableExpressionBase<?>) pair.getFirst();
-
-                    var descValue = Order.DESC.name().toLowerCase();
-                    var orderSpecification = descValue.equals(column.getOrderDirection())
-                            ? comparableExpressionBase.desc()
-                            : comparableExpressionBase.asc();
-
-                    return QSort.by(orderSpecification);
-                });
-    }
+                var descValue = Order.DESC.name().toLowerCase();
+                var orderSpecification =
+                    descValue.equals(column.getOrderDirection())
+                        ? comparableExpressionBase.desc()
+                        : comparableExpressionBase.asc();
+                return QSort.by(orderSpecification);
+              } else {
+                return QSort.unsorted();
+              }
+            });
+  }
 }

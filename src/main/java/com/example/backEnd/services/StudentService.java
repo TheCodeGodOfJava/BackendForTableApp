@@ -38,11 +38,13 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
     map.put("gender", Pair.of(qStudent.gender, BOOLEAN));
     map.put("enrollDate", Pair.of(qStudent.enrollDate, DATE_TIME));
     map.put("about", Pair.of(qStudent.about, STR));
+    map.put("country", Pair.of(qStudent.country, STR));
     map.put("state", Pair.of(qStudent.state, STR));
     map.put("city", Pair.of(qStudent.city, STR));
     table = new ExpressionTypeAlias(map, StudentProjection.class);
 
-    dependencyMap.put("city", qStudent.state);
+    dependencyMap.put("state", qStudent.state);
+    dependencyMap.put("country", qStudent.country);
   }
 
   private final StudentRepository studentRepository;
@@ -56,6 +58,7 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
     addFieldPath("firstName", qStudent.firstName);
     addFieldPath("lastName", qStudent.lastName);
     addFieldPath("age", qStudent.age);
+    addFieldPath("country", qStudent.country);
     addFieldPath("state", qStudent.state);
     addFieldPath("city", qStudent.city);
     this.modelMapper = modelMapper;

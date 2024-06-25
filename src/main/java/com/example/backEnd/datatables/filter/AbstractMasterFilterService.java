@@ -59,12 +59,12 @@ public abstract class AbstractMasterFilterService<T> {
   }
 
   public Collection<?> findByFieldAndTerm(
-      String field, String term, String dep, BooleanExpression exp) {
-    return filterService.findByFieldAndTerm(field, term, dep, exp);
+      String field, String term, String depAlias, String dep, BooleanExpression exp) {
+    return filterService.findByFieldAndTerm(field, term, depAlias, dep, exp);
   }
 
   public Collection<?> findByFieldAndTerm(
-      Long masterId, String masterType, String field, String term, String dep) {
-    return filterService.findByFieldAndTerm(masterType, masterId, field, term, dep);
+      Long masterId, String masterType, String field, String term, String depAlias, String dep) {
+    return filterService.findByFieldAndTerm(masterType, masterId, field, term, depAlias, dep);
   }
 }

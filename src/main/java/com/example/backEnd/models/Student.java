@@ -12,27 +12,28 @@ import lombok.Setter;
 @Entity
 @Table(name = "students")
 public class Student extends AbstractEntity {
-    @Column(name = "first_name")
-    private String firstName;
+  @Column(name = "first_name")
+  private String firstName;
 
-    @Column(name = "last_name")
-    private String lastName;
+  @Column(name = "last_name")
+  private String lastName;
 
-    @Column()
-    private Integer age;
+  @Column() private Integer age;
 
-    @Column()
-    private Boolean gender = Boolean.TRUE;
+  @Column() private Boolean gender = Boolean.TRUE;
 
-    @Column(name = "enroll_date")
-    private LocalDate enrollDate;
+  @Column(name = "enroll_date")
+  private LocalDate enrollDate;
 
-    @Column(columnDefinition = "text")
-    private String about;
+  @Column(columnDefinition = "text")
+  private String about;
 
-    @Column(name = "state")
-    private String state;
+  @Column(name = "country")
+  private String country;
 
-    @Column(name = "city")
-    private String city;
+  @Column(name = "state")
+  private String state;
+
+  @Column(name = "city")
+  private String city;
 }

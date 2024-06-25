@@ -1,12 +1,11 @@
 package com.example.backEnd.models.projections;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -27,6 +26,8 @@ public class StudentProjection {
   private LocalDate enrollDate;
 
   private String about;
+
+  private String country;
 
   private String state;
 

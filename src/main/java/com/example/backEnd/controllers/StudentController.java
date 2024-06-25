@@ -30,9 +30,11 @@ public class StudentController {
   public ResponseEntity<Collection<?>> searchByTermAndField(
       @RequestParam String field,
       @RequestParam String term,
-      @RequestParam(required = false) String dep) {
+      @RequestParam(required = false) String depAlias,
+      @RequestParam(required = false) String dep
+      ) {
 
-    Collection<?> results = studentService.findByFieldAndTerm(null, null, field, term, dep);
+    Collection<?> results = studentService.findByFieldAndTerm(null, null, field, term, depAlias, dep);
     return ResponseEntity.ok(results);
   }
 

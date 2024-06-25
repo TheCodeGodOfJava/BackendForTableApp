@@ -35,18 +35,23 @@ public class BaseFilterService<T> extends AbstractDataService {
   }
 
   public Collection<?> findByFieldAndTerm(
-      String masterType, Long masterId, String field, String term, String dependency) {
+      String masterType,
+      Long masterId,
+      String field,
+      String term,
+      String dependencyAlias,
+      String dependency) {
 
     BooleanExpression exp = null;
     if (masterType != null && masterId != null && masterId != 0) {
       var masterFilterType = fieldPathMap.get(field).getSecond();
       exp = getMasterExpression(masterType, masterId, masterFilterType);
     }
-    return findByFieldAndTerm(field, term, dependency, exp);
+    return findByFieldAndTerm(field, term, dependencyAlias, dependency, exp);
   }
 
   public Collection<?> findByFieldAndTerm(
-      String field, String term, String dependency, Predicate exp) {
+      String field, String term, String dependencyAlias, String dependency, Predicate exp) {
 
     var fieldPath = fieldPathMap.get(field).getFirst();
 
@@ -64,13 +69,13 @@ public class BaseFilterService<T> extends AbstractDataService {
             .like("%" + term + "%")
             .and(exp);
 
-    return query.where(addDependencyCase(whereExp, field, dependency)).fetch();
+    return query.where(addDependencyCase(whereExp, dependencyAlias, dependency)).fetch();
   }
 
   private BooleanExpression addDependencyCase(
-      BooleanExpression exp, String field, String dependency) {
+      BooleanExpression exp, String dependencyAlias, String dependency) {
     if (this.dependencyMap != null) {
-      StringPath dependencyPath = this.dependencyMap.get(field);
+      StringPath dependencyPath = this.dependencyMap.get(dependencyAlias);
       if (dependencyPath != null && dependency != null) {
         exp = exp.and(dependencyPath.eq(dependency));
       }

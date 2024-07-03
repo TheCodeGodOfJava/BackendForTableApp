@@ -12,6 +12,7 @@ import com.example.backEnd.repositories.StudentRepository;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.StringPath;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +63,19 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
     addFieldPath("state", qStudent.state);
     addFieldPath("city", qStudent.city);
     this.modelMapper = modelMapper;
+  }
+
+  @Transactional
+  public StudentProjection findById(Long id) {
+    var customerWorkOrderNumber =
+        studentRepository
+            .findById(id)
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        String.format("No %s found with id: %s", "Student", id)));
+
+    return modelMapper.map(customerWorkOrderNumber, StudentProjection.class);
   }
 
   @Transactional

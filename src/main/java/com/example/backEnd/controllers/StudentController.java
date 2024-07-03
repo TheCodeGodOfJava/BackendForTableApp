@@ -20,6 +20,12 @@ public class StudentController {
 
   private final StudentService studentService;
 
+  @GetMapping("/getOneById")
+  public ResponseEntity<StudentProjection> getCustomerWorkOrderNumberById(@RequestParam Long id) {
+    var result = studentService.findById(id);
+    return ResponseEntity.ok(result);
+  }
+
   @GetMapping("/all")
   public ResponseEntity<DataTablesOutput<StudentProjection>> getAll(@Valid DataTablesInput input) {
 

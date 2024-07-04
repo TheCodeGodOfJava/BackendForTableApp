@@ -5,8 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.example.backEnd.controllers.StudentController;
 import com.example.backEnd.datatables.mapping.DataTablesOutput;
@@ -31,104 +30,133 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @ExtendWith(MockitoExtension.class)
 class StudentControllerTest {
 
-    @Mock
-    private StudentService service;
+  @Mock private StudentService service;
 
-    @InjectMocks
-    private StudentController controller;
+  @InjectMocks private StudentController controller;
 
-    private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
-    @BeforeEach
-    public void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-    }
+  @BeforeEach
+  public void init() {
+    mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+  }
 
-    @Test
-    void getAll() throws Exception {
-        // Stubbing the service method
-        when(service.findAll(any(), any(), any(), any())).thenReturn(new DataTablesOutput<>());
+  @Test
+  void getAll() throws Exception {
+    // Stubbing the service method
+    when(service.findAll(any(), any(), any(), any())).thenReturn(new DataTablesOutput<>());
 
-        // Performing the mock MVC request
-        mockMvc.perform(get("/students/all"))
-                .andDo(print())
-                .andExpect(status().isOk());
+    // Performing the mock MVC request
+    mockMvc.perform(get("/students/all")).andDo(print()).andExpect(status().isOk());
 
-        // Verifying that the service method was called exactly once
-        verify(service, times(1)).findAll(any(), any(), any(), any());
-        verifyNoMoreInteractions(service);
-    }
+    // Verifying that the service method was called exactly once
+    verify(service, times(1)).findAll(any(), any(), any(), any());
+    verifyNoMoreInteractions(service);
+  }
 
-    @Test
-    void searchByTermAndField() throws Exception {
-        String field = "name";
-        String term = "John";
+  @Test
+  void searchByTermAndField() throws Exception {
+    String field = "name";
+    String term = "John";
 
-        // Stubbing the service method
-        when(service.findByFieldAndTerm(any(), any(), eq(field), eq(term), any()))
-                .thenReturn(Collections.emptyList());
+    // Stubbing the service method
+    when(service.findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any()))
+        .thenReturn(Collections.emptyList());
 
-        // Performing the mock MVC request
-        mockMvc.perform(get("/students/filter")
-                        .param("field", field)
-                        .param("term", term))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(0))); // Expecting an empty list
+    // Performing the mock MVC request
+    mockMvc
+        .perform(get("/students/filter").param("field", field).param("term", term))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$", hasSize(0))); // Expecting an empty list
 
-        // Verifying that the service method was called exactly once
-        verify(service, times(1)).findByFieldAndTerm(any(), any(), eq(field), eq(term), any());
-        verifyNoMoreInteractions(service);
-    }
+    // Verifying that the service method was called exactly once
+    verify(service, times(1)).findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any());
+    verifyNoMoreInteractions(service);
+  }
 
-    @Test
-    void saveStudent() throws Exception {
-        // Mock student projection to be saved
-        var studentProjection = new StudentProjection();
-        studentProjection.setId(1L);
-        studentProjection.setFirstName("John Doe");
+  @Test
+  void saveStudent() throws Exception {
+    // Mock student projection to be saved
+    var studentProjection = new StudentProjection();
+    studentProjection.setId(1L);
+    studentProjection.setFirstName("John Doe");
 
-        // Mocking service method
-        when(service.save(any(StudentProjection.class))).thenReturn(studentProjection);
+    // Mocking service method
+    when(service.save(any(StudentProjection.class))).thenReturn(studentProjection);
 
-        // Convert student projection to JSON
-        ObjectMapper objectMapper = new ObjectMapper();
-        String studentJson = objectMapper.writeValueAsString(studentProjection);
+    // Convert student projection to JSON
+    ObjectMapper objectMapper = new ObjectMapper();
+    String studentJson = objectMapper.writeValueAsString(studentProjection);
 
-        // Perform POST request to save student
-        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/students/save")
+    // Perform POST request to save student
+    ResultActions result =
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/students/save")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(studentJson));
 
-        // Verify HTTP status
-        result.andExpect(status().isCreated());
+    // Verify HTTP status
+    result.andExpect(status().isCreated());
 
-        // Verify that service method was called once
-        verify(service).save(any(StudentProjection.class));
-    }
+    // Verify that service method was called once
+    verify(service).save(any(StudentProjection.class));
+  }
 
+  @Test
+  void removeStudents() throws Exception {
+    // Mock IDs to be removed
+    List<Long> idsToRemove = Arrays.asList(1L, 2L, 3L);
 
-    @Test
-    void removeStudents() throws Exception {
-        // Mock IDs to be removed
-        List<Long> idsToRemove = Arrays.asList(1L, 2L, 3L);
+    // Mocking service method
+    doNothing().when(service).removeAll(idsToRemove);
 
-        // Mocking service method
-        doNothing().when(service).removeAll(idsToRemove);
+    // Convert IDs to JSON
+    ObjectMapper objectMapper = new ObjectMapper();
+    String idsJson = objectMapper.writeValueAsString(idsToRemove);
 
-        // Convert IDs to JSON
-        ObjectMapper objectMapper = new ObjectMapper();
-        String idsJson = objectMapper.writeValueAsString(idsToRemove);
-
-        // Perform DELETE request to remove students
-        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.delete("/students/remove")
+    // Perform DELETE request to remove students
+    ResultActions result =
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/students/remove")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(idsJson));
 
-        // Verify HTTP status
-        result.andExpect(status().isOk());
+    // Verify HTTP status
+    result.andExpect(status().isOk());
 
-        // Verify that service method was called once with correct arguments
-        verify(service).removeAll(idsToRemove);
-    }
+    // Verify that service method was called once with correct arguments
+    verify(service).removeAll(idsToRemove);
+  }
+
+  @Test
+  public void getStudentById() throws Exception {
+    // Mock student ID
+    Long studentId = 1L;
+
+    // Mock student projection
+    StudentProjection studentProjection = new StudentProjection();
+    studentProjection.setId(studentId);
+    studentProjection.setFirstName("John");
+
+    // Stubbing the service method
+    when(service.findById(studentId)).thenReturn(studentProjection);
+
+    // Perform GET request to retrieve student by ID
+    ResultActions result =
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/students/getOneById")
+                .param("id", String.valueOf(studentId))
+                .contentType(MediaType.APPLICATION_JSON));
+
+    // Verify HTTP status and JSON response
+    result
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id").value(studentProjection.getId().intValue()))
+        .andExpect(jsonPath("$.firstName").value(studentProjection.getFirstName()));
+
+    // Verify that service method was called once with correct ID argument
+    verify(service).findById(eq(studentId));
+  }
 }

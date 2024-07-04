@@ -28,12 +28,18 @@ public class Student extends AbstractEntity {
   @Column(columnDefinition = "text")
   private String about;
 
-  @Column(name = "country")
+  @Column()
   private String country;
 
-  @Column(name = "state")
+  @Column()
   private String state;
 
-  @Column(name = "city")
+  @Column()
   private String city;
+
+  @Column()
+  private String phone;
+
+  @Column()
+  private String email;
 }

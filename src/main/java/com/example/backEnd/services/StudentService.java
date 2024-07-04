@@ -7,6 +7,7 @@ import com.example.backEnd.datatables.filter.AbstractMasterService;
 import com.example.backEnd.datatables.mapping.ExpressionTypeAlias;
 import com.example.backEnd.models.QStudent;
 import com.example.backEnd.models.Student;
+import com.example.backEnd.models.projections.StudentFormProjection;
 import com.example.backEnd.models.projections.StudentProjection;
 import com.example.backEnd.repositories.StudentRepository;
 import com.querydsl.core.types.Expression;
@@ -66,7 +67,7 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
   }
 
   @Transactional
-  public StudentProjection findById(Long id) {
+  public StudentFormProjection findById(Long id) {
     var customerWorkOrderNumber =
         studentRepository
             .findById(id)
@@ -74,15 +75,14 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
                 () ->
                     new EntityNotFoundException(
                         String.format("No %s found with id: %s", "Student", id)));
-
-    return modelMapper.map(customerWorkOrderNumber, StudentProjection.class);
+    return modelMapper.map(customerWorkOrderNumber, StudentFormProjection.class);
   }
 
   @Transactional
-  public StudentProjection save(StudentProjection studentProjection) {
-    var student = modelMapper.map(studentProjection, Student.class);
+  public StudentFormProjection save(StudentFormProjection studentFormProjection) {
+    var student = modelMapper.map(studentFormProjection, Student.class);
     student = this.studentRepository.save(student);
-    return this.modelMapper.map(student, StudentProjection.class);
+    return this.modelMapper.map(student, StudentFormProjection.class);
   }
 
   @Transactional

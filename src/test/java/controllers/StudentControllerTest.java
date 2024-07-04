@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.example.backEnd.controllers.StudentController;
 import com.example.backEnd.datatables.mapping.DataTablesOutput;
+import com.example.backEnd.models.projections.StudentFormProjection;
 import com.example.backEnd.models.projections.StudentProjection;
 import com.example.backEnd.services.StudentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,12 +79,12 @@ class StudentControllerTest {
   @Test
   void saveStudent() throws Exception {
     // Mock student projection to be saved
-    var studentProjection = new StudentProjection();
+    var studentProjection = new StudentFormProjection();
     studentProjection.setId(1L);
     studentProjection.setFirstName("John Doe");
 
     // Mocking service method
-    when(service.save(any(StudentProjection.class))).thenReturn(studentProjection);
+    when(service.save(any(StudentFormProjection.class))).thenReturn(studentProjection);
 
     // Convert student projection to JSON
     ObjectMapper objectMapper = new ObjectMapper();
@@ -100,7 +101,7 @@ class StudentControllerTest {
     result.andExpect(status().isCreated());
 
     // Verify that service method was called once
-    verify(service).save(any(StudentProjection.class));
+    verify(service).save(any(StudentFormProjection.class));
   }
 
   @Test
@@ -135,7 +136,7 @@ class StudentControllerTest {
     Long studentId = 1L;
 
     // Mock student projection
-    StudentProjection studentProjection = new StudentProjection();
+    var studentProjection = new StudentFormProjection();
     studentProjection.setId(studentId);
     studentProjection.setFirstName("John");
 

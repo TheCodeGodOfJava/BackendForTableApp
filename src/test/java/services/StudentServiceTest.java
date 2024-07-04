@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import com.example.backEnd.models.Student;
+import com.example.backEnd.models.projections.StudentFormProjection;
 import com.example.backEnd.models.projections.StudentProjection;
 import com.example.backEnd.repositories.StudentRepository;
 import com.example.backEnd.services.StudentService;
@@ -35,7 +36,7 @@ public class StudentServiceTest {
     @Test
     public void testSave() {
         // Given
-        StudentProjection studentProjection = new StudentProjection();
+        StudentFormProjection studentProjection = new StudentFormProjection();
         studentProjection.setId(1L);
         studentProjection.setFirstName("John");
         studentProjection.setLastName("Doe");
@@ -49,7 +50,7 @@ public class StudentServiceTest {
 
         // Mock behavior of ModelMapper
         when(modelMapper.map(studentProjection, Student.class)).thenReturn(studentEntity);
-        when(modelMapper.map(studentEntity, StudentProjection.class)).thenReturn(studentProjection);
+        when(modelMapper.map(studentEntity, StudentFormProjection.class)).thenReturn(studentProjection);
 
         // Mock behavior of StudentRepository
         when(studentRepository.save(studentEntity)).thenReturn(studentEntity);

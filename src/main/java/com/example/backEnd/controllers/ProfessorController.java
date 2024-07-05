@@ -2,9 +2,8 @@ package com.example.backEnd.controllers;
 
 import com.example.backEnd.datatables.mapping.DataTablesInput;
 import com.example.backEnd.datatables.mapping.DataTablesOutput;
-import com.example.backEnd.models.projections.StudentFormProjection;
-import com.example.backEnd.models.projections.StudentProjection;
-import com.example.backEnd.services.StudentService;
+import com.example.backEnd.models.projections.ProfessorProjection;
+import com.example.backEnd.services.ProfessorService;
 import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.List;
@@ -16,21 +15,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/students")
-public class StudentController {
+@RequestMapping("/professors")
+public class ProfessorController {
 
-  private final StudentService studentService;
+  private final ProfessorService professorService;
 
   @GetMapping("/getOneById")
-  public ResponseEntity<StudentFormProjection> getById(@RequestParam Long id) {
-    var result = studentService.findById(id);
+  public ResponseEntity<ProfessorProjection> getById(@RequestParam Long id) {
+    var result = professorService.findById(id);
     return ResponseEntity.ok(result);
   }
 
   @GetMapping("/all")
-  public ResponseEntity<DataTablesOutput<StudentProjection>> getAll(@Valid DataTablesInput input) {
-
-    return new ResponseEntity<>(studentService.findAll(null, null, false, input), HttpStatus.OK);
+  public ResponseEntity<DataTablesOutput<ProfessorProjection>> getAll(
+      @Valid DataTablesInput input) {
+    return new ResponseEntity<>(professorService.findAll(null, null, false, input), HttpStatus.OK);
   }
 
   @GetMapping("/filter")
@@ -38,17 +37,18 @@ public class StudentController {
       @RequestParam String field,
       @RequestParam String term,
       @RequestParam(required = false) String depAlias,
-      @RequestParam(required = false) String dep
-      ) {
+      @RequestParam(required = false) String dep) {
 
-    Collection<?> results = studentService.findByFieldAndTerm(null, null, field, term, depAlias, dep);
+    Collection<?> results =
+        professorService.findByFieldAndTerm(null, null, field, term, depAlias, dep);
     return ResponseEntity.ok(results);
   }
 
   @PostMapping("/save")
-  public ResponseEntity<StudentFormProjection> save(@RequestBody StudentFormProjection studentFormProjection) {
-    var projection = studentService.save(studentFormProjection);
-    var optional = Optional.ofNullable(studentFormProjection);
+  public ResponseEntity<ProfessorProjection> save(
+      @RequestBody ProfessorProjection ProfessorProjection) {
+    var projection = professorService.save(ProfessorProjection);
+    var optional = Optional.ofNullable(ProfessorProjection);
     var httpStatus =
         optional.map(detail -> HttpStatus.CREATED).orElse(HttpStatus.INTERNAL_SERVER_ERROR);
     return new ResponseEntity<>(projection, httpStatus);
@@ -56,7 +56,7 @@ public class StudentController {
 
   @DeleteMapping("/remove")
   public ResponseEntity<Void> remove(@RequestBody List<Long> ids) {
-    studentService.removeAll(ids);
+    professorService.removeAll(ids);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 }

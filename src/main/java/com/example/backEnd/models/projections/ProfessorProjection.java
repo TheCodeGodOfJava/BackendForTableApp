@@ -12,6 +12,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ProfessorProjection {
 
+  private Long id;
+
   private String firstName;
 
   private String lastName;

@@ -8,7 +8,6 @@ import com.example.backEnd.datatables.mapping.ExpressionTypeAlias;
 import com.example.backEnd.models.Professor;
 import com.example.backEnd.models.QProfessor;
 import com.example.backEnd.models.projections.ProfessorProjection;
-import com.example.backEnd.models.projections.StudentProjection;
 import com.example.backEnd.repositories.ProfessorRepository;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.StringPath;
@@ -39,7 +38,7 @@ public class ProfessorService extends AbstractMasterService<Professor, Professor
     map.put("subject", Pair.of(qProfessor.subject, STR));
     map.put("phone", Pair.of(qProfessor.phone, STR));
 
-    table = new ExpressionTypeAlias(map, StudentProjection.class);
+    table = new ExpressionTypeAlias(map, ProfessorProjection.class);
   }
 
   private final ProfessorRepository professorRepository;

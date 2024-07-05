@@ -7,11 +7,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.example.backEnd.controllers.StudentController;
+import com.example.backEnd.controllers.ProfessorController;
 import com.example.backEnd.datatables.mapping.DataTablesOutput;
-import com.example.backEnd.models.projections.StudentFormProjection;
-import com.example.backEnd.models.projections.StudentProjection;
-import com.example.backEnd.services.StudentService;
+import com.example.backEnd.models.projections.ProfessorProjection;
+import com.example.backEnd.services.ProfessorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,11 +28,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
-class StudentControllerTest {
+class ProfessorControllerTest {
 
-  @Mock private StudentService service;
+  @Mock private ProfessorService service;
 
-  @InjectMocks private StudentController controller;
+  @InjectMocks private ProfessorController controller;
 
   private MockMvc mockMvc;
 
@@ -48,7 +47,7 @@ class StudentControllerTest {
     when(service.findAll(any(), any(), any(), any())).thenReturn(new DataTablesOutput<>());
 
     // Performing the mock MVC request
-    mockMvc.perform(get("/students/all")).andDo(print()).andExpect(status().isOk());
+    mockMvc.perform(get("/professors/all")).andDo(print()).andExpect(status().isOk());
 
     // Verifying that the service method was called exactly once
     verify(service, times(1)).findAll(any(), any(), any(), any());
@@ -66,7 +65,7 @@ class StudentControllerTest {
 
     // Performing the mock MVC request
     mockMvc
-        .perform(get("/students/filter").param("field", field).param("term", term))
+        .perform(get("/professors/filter").param("field", field).param("term", term))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(0))); // Expecting an empty list
@@ -78,30 +77,30 @@ class StudentControllerTest {
 
   @Test
   void save() throws Exception {
-    // Mock student projection to be saved
-    var studentProjection = new StudentFormProjection();
-    studentProjection.setId(1L);
-    studentProjection.setFirstName("John Doe");
+    // Mock professor projection to be saved
+    var professorProjection = new ProfessorProjection();
+    professorProjection.setId(1L);
+    professorProjection.setFirstName("John Doe");
 
     // Mocking service method
-    when(service.save(any(StudentFormProjection.class))).thenReturn(studentProjection);
+    when(service.save(any(ProfessorProjection.class))).thenReturn(professorProjection);
 
-    // Convert student projection to JSON
+    // Convert professor projection to JSON
     ObjectMapper objectMapper = new ObjectMapper();
-    String studentJson = objectMapper.writeValueAsString(studentProjection);
+    String professorJson = objectMapper.writeValueAsString(professorProjection);
 
-    // Perform POST request to save student
+    // Perform POST request to save professor
     ResultActions result =
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/students/save")
+            MockMvcRequestBuilders.post("/professors/save")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(studentJson));
+                .content(professorJson));
 
     // Verify HTTP status
     result.andExpect(status().isCreated());
 
     // Verify that service method was called once
-    verify(service).save(any(StudentFormProjection.class));
+    verify(service).save(any(ProfessorProjection.class));
   }
 
   @Test
@@ -116,10 +115,10 @@ class StudentControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
     String idsJson = objectMapper.writeValueAsString(idsToRemove);
 
-    // Perform DELETE request to remove students
+    // Perform DELETE request to remove professors
     ResultActions result =
         mockMvc.perform(
-            MockMvcRequestBuilders.delete("/students/remove")
+            MockMvcRequestBuilders.delete("/professors/remove")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(idsJson));
 
@@ -132,32 +131,32 @@ class StudentControllerTest {
 
   @Test
   public void getById() throws Exception {
-    // Mock student ID
-    Long studentId = 1L;
+    // Mock professor ID
+    Long professorId = 1L;
 
-    // Mock student projection
-    var studentProjection = new StudentFormProjection();
-    studentProjection.setId(studentId);
-    studentProjection.setFirstName("John");
+    // Mock professor projection
+    var professorProjection = new ProfessorProjection();
+    professorProjection.setId(professorId);
+    professorProjection.setFirstName("John");
 
     // Stubbing the service method
-    when(service.findById(studentId)).thenReturn(studentProjection);
+    when(service.findById(professorId)).thenReturn(professorProjection);
 
-    // Perform GET request to retrieve student by ID
+    // Perform GET request to retrieve professor by ID
     ResultActions result =
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/students/getOneById")
-                .param("id", String.valueOf(studentId))
+            MockMvcRequestBuilders.get("/professors/getOneById")
+                .param("id", String.valueOf(professorId))
                 .contentType(MediaType.APPLICATION_JSON));
 
     // Verify HTTP status and JSON response
     result
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.id").value(studentProjection.getId().intValue()))
-        .andExpect(jsonPath("$.firstName").value(studentProjection.getFirstName()));
+        .andExpect(jsonPath("$.id").value(professorProjection.getId().intValue()))
+        .andExpect(jsonPath("$.firstName").value(professorProjection.getFirstName()));
 
     // Verify that service method was called once with correct ID argument
-    verify(service).findById(eq(studentId));
+    verify(service).findById(eq(professorId));
   }
 }

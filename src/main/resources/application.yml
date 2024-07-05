@@ -20,7 +20,10 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-
+    properties:
+      hibernate:
+        hbm2ddl:
+          import_files: students.sql, professors.sql
   h2:
     console:
       enabled: true

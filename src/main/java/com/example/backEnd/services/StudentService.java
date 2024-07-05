@@ -68,14 +68,14 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
 
   @Transactional
   public StudentFormProjection findById(Long id) {
-    var customerWorkOrderNumber =
+    var student =
         studentRepository
             .findById(id)
             .orElseThrow(
                 () ->
                     new EntityNotFoundException(
                         String.format("No %s found with id: %s", "Student", id)));
-    return modelMapper.map(customerWorkOrderNumber, StudentFormProjection.class);
+    return modelMapper.map(student, StudentFormProjection.class);
   }
 
   @Transactional

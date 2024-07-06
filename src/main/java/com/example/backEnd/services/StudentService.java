@@ -1,9 +1,11 @@
 package com.example.backEnd.services;
 
 import static com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType.*;
+import static com.example.backEnd.datatables.filter.MASTER_TYPE.PROFESSOR;
 
 import com.example.backEnd.datatables.expression.queryTypeColumns.ColumnValueType;
 import com.example.backEnd.datatables.filter.AbstractMasterService;
+import com.example.backEnd.datatables.filter.MasterFilterType;
 import com.example.backEnd.datatables.mapping.ExpressionTypeAlias;
 import com.example.backEnd.models.QStudent;
 import com.example.backEnd.models.Student;
@@ -56,6 +58,16 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
       EntityManager entityManager, StudentRepository studentRepository, ModelMapper modelMapper) {
     super(qStudent, entityManager, studentRepository, table, dependencyMap);
     this.studentRepository = studentRepository;
+    addMaster(
+        PROFESSOR.toString(),
+        MasterFilterType.EQUALS,
+        (masterId) -> qStudent.professors.any().id.eq(masterId));
+    addMaster(
+        PROFESSOR.toString(),
+        MasterFilterType.NOT_EQUALS,
+        (masterId) ->
+            notInFilteredByPredicate(
+                entityManager, qStudent, qStudent.id, qStudent.professors.any().id.eq(masterId)));
     addFieldPath("id", qStudent.id);
     addFieldPath("firstName", qStudent.firstName);
     addFieldPath("lastName", qStudent.lastName);

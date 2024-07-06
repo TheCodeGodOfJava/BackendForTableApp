@@ -23,7 +23,7 @@ spring:
     properties:
       hibernate:
         hbm2ddl:
-          import_files: students.sql, professors.sql
+          import_files: students.sql, professors.sql, student_professor.sql
   h2:
     console:
       enabled: true

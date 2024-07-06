@@ -1,9 +1,10 @@
 package com.example.backEnd.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,18 +29,31 @@ public class Student extends AbstractEntity {
   @Column(columnDefinition = "text")
   private String about;
 
-  @Column()
-  private String country;
+  @Column() private String country;
 
-  @Column()
-  private String state;
+  @Column() private String state;
 
-  @Column()
-  private String city;
+  @Column() private String city;
 
-  @Column()
-  private String phone;
+  @Column() private String phone;
 
-  @Column()
-  private String email;
+  @Column() private String email;
+
+  @Getter(AccessLevel.NONE)
+  @ManyToMany
+  @JoinTable(
+      name = "student_professor",
+      joinColumns = @JoinColumn(name = "student_id"),
+      inverseJoinColumns = @JoinColumn(name = "professor_id"))
+  private Set<Professor> professors = new HashSet<>();
+
+  public void bindProfessor(Professor professor) {
+    professors.add(professor);
+    professor.addUniDirectionStudent(this);
+  }
+
+  public void unbindPermit(Professor professor) {
+    professors.remove(professor);
+    professor.removeUniDirectionStudent(this);
+  }
 }

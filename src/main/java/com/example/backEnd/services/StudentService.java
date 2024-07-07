@@ -113,7 +113,9 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
 
   @Transactional
   public void unbindAll(Long masterId, List<Long> ids) {
-    var student = findById(masterId);
-    ids.stream().map(professorRepository::getReferenceById).forEach(student::unbindProfessor);
+    var professor = professorRepository.getReferenceById(masterId);
+    ids.stream()
+        .map(studentRepository::getReferenceById)
+        .forEach(student -> student.unbindProfessor(professor));
   }
 }

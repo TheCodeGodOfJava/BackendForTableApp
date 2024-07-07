@@ -22,7 +22,7 @@ public class ProfessorController {
 
   @GetMapping("/getOneById")
   public ResponseEntity<ProfessorProjection> getById(@RequestParam Long id) {
-    var result = professorService.findById(id);
+    var result = professorService.findByIdProjection(id);
     return ResponseEntity.ok(result);
   }
 
@@ -62,6 +62,12 @@ public class ProfessorController {
   @DeleteMapping("/remove")
   public ResponseEntity<Void> remove(@RequestBody List<Long> ids) {
     professorService.removeAll(ids);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  @DeleteMapping("/unbind")
+  public ResponseEntity<Void> unbind(@RequestParam Long masterId, @RequestBody List<Long> ids) {
+    professorService.unbindAll(masterId, ids);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 }

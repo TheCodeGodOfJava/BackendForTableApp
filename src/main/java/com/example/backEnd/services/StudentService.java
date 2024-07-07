@@ -11,6 +11,7 @@ import com.example.backEnd.models.QStudent;
 import com.example.backEnd.models.Student;
 import com.example.backEnd.models.projections.StudentFormProjection;
 import com.example.backEnd.models.projections.StudentProjection;
+import com.example.backEnd.repositories.ProfessorRepository;
 import com.example.backEnd.repositories.StudentRepository;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.StringPath;
@@ -52,12 +53,17 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
   }
 
   private final StudentRepository studentRepository;
+  private final ProfessorRepository professorRepository;
   private final ModelMapper modelMapper;
 
   public StudentService(
-      EntityManager entityManager, StudentRepository studentRepository, ModelMapper modelMapper) {
+      EntityManager entityManager,
+      StudentRepository studentRepository,
+      ProfessorRepository professorRepository,
+      ModelMapper modelMapper) {
     super(qStudent, entityManager, studentRepository, table, dependencyMap);
     this.studentRepository = studentRepository;
+    this.professorRepository = professorRepository;
     addMaster(
         PROFESSOR.toString(),
         MasterFilterType.EQUALS,
@@ -79,15 +85,18 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
   }
 
   @Transactional
-  public StudentFormProjection findById(Long id) {
-    var student =
-        studentRepository
-            .findById(id)
-            .orElseThrow(
-                () ->
-                    new EntityNotFoundException(
-                        String.format("No %s found with id: %s", "Student", id)));
+  public StudentFormProjection findByIdProjection(Long id) {
+    var student = findById(id);
     return modelMapper.map(student, StudentFormProjection.class);
+  }
+
+  public Student findById(Long id) {
+    return studentRepository
+        .findById(id)
+        .orElseThrow(
+            () ->
+                new EntityNotFoundException(
+                    String.format("No %s found with id: %s", "Student", id)));
   }
 
   @Transactional
@@ -100,5 +109,11 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
   @Transactional
   public void removeAll(List<Long> ids) {
     studentRepository.deleteAllById(ids);
+  }
+
+  @Transactional
+  public void unbindAll(Long masterId, List<Long> ids) {
+    var student = findById(masterId);
+    ids.stream().map(professorRepository::getReferenceById).forEach(student::unbindProfessor);
   }
 }

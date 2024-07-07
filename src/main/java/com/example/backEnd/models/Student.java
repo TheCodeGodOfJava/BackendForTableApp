@@ -52,7 +52,7 @@ public class Student extends AbstractEntity {
     professor.addUniDirectionStudent(this);
   }
 
-  public void unbindPermit(Professor professor) {
+  public void unbindProfessor(Professor professor) {
     professors.remove(professor);
     professor.removeUniDirectionStudent(this);
   }

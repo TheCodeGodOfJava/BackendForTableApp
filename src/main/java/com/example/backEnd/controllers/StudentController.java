@@ -23,7 +23,7 @@ public class StudentController {
 
   @GetMapping("/getOneById")
   public ResponseEntity<StudentFormProjection> getById(@RequestParam Long id) {
-    var result = studentService.findById(id);
+    var result = studentService.findByIdProjection(id);
     return ResponseEntity.ok(result);
   }
 
@@ -63,6 +63,12 @@ public class StudentController {
   @DeleteMapping("/remove")
   public ResponseEntity<Void> remove(@RequestBody List<Long> ids) {
     studentService.removeAll(ids);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  @DeleteMapping("/unbind")
+  public ResponseEntity<Void> unbind(@RequestParam Long masterId, @RequestBody List<Long> ids) {
+    studentService.unbindAll(masterId, ids);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 }

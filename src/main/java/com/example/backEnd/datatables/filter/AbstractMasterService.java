@@ -18,6 +18,8 @@ import java.util.function.Function;
 
 public abstract class AbstractMasterService<T, P> extends AbstractMasterFilterService<T> {
 
+  public static final String DOESNT_EXIST_MESSAGE = "%s with id: %s does not exist";
+
   private final BaseFindService<T, P> findService;
   private final EntityPath<?>[] entityJoins;
 

@@ -179,7 +179,7 @@ class ProfessorControllerTest {
     professorProjection.setFirstName("John");
 
     // Stubbing the service method
-    when(service.findById(professorId)).thenReturn(professorProjection);
+    when(service.findByIdProjection(professorId)).thenReturn(professorProjection);
 
     // Perform GET request to retrieve professor by ID
     ResultActions result =
@@ -196,6 +196,34 @@ class ProfessorControllerTest {
         .andExpect(jsonPath("$.firstName").value(professorProjection.getFirstName()));
 
     // Verify that service method was called once with correct ID argument
-    verify(service).findById(eq(professorId));
+    verify(service).findByIdProjection(eq(professorId));
+  }
+
+  @Test
+  void unbind() throws Exception {
+    // Mock master ID and IDs to be unbound
+    Long masterId = 1L;
+    List<Long> idsToUnbind = Arrays.asList(2L, 3L);
+
+    // Mocking service method
+    doNothing().when(service).unbindAll(masterId, idsToUnbind);
+
+    // Convert IDs to JSON
+    ObjectMapper objectMapper = new ObjectMapper();
+    String idsJson = objectMapper.writeValueAsString(idsToUnbind);
+
+    // Perform DELETE request to unbind professors
+    ResultActions result =
+            mockMvc.perform(
+                    MockMvcRequestBuilders.delete("/professors/unbind")
+                            .param("masterId", String.valueOf(masterId))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(idsJson));
+
+    // Verify HTTP status
+    result.andExpect(status().isOk());
+
+    // Verify that service method was called once with correct arguments
+    verify(service).unbindAll(masterId, idsToUnbind);
   }
 }

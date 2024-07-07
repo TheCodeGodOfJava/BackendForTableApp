@@ -59,21 +59,21 @@ class StudentControllerTest {
 
     // Performing the mock MVC request
     mockMvc
-            .perform(
-                    get("/students/all")
-                            .param("masterId", "1")
-                            .param("masterType", "type")
-                            .param("tableToggle", "true")
-                            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data", hasSize(2)))
-            .andExpect(jsonPath("$.data[0].id").value(firstStudent.getId()))
-            .andExpect(jsonPath("$.data[0].firstName").value(firstStudent.getFirstName()))
-            .andExpect(jsonPath("$.data[0].lastName").value(firstStudent.getLastName()))
-            .andExpect(jsonPath("$.data[1].id").value(secondStudent.getId()))
-            .andExpect(jsonPath("$.data[1].firstName").value(secondStudent.getFirstName()))
-            .andExpect(jsonPath("$.data[1].lastName").value(secondStudent.getLastName()));
+        .perform(
+            get("/students/all")
+                .param("masterId", "1")
+                .param("masterType", "type")
+                .param("tableToggle", "true")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data", hasSize(2)))
+        .andExpect(jsonPath("$.data[0].id").value(firstStudent.getId()))
+        .andExpect(jsonPath("$.data[0].firstName").value(firstStudent.getFirstName()))
+        .andExpect(jsonPath("$.data[0].lastName").value(firstStudent.getLastName()))
+        .andExpect(jsonPath("$.data[1].id").value(secondStudent.getId()))
+        .andExpect(jsonPath("$.data[1].firstName").value(secondStudent.getFirstName()))
+        .andExpect(jsonPath("$.data[1].lastName").value(secondStudent.getLastName()));
 
     // Verifying that the service method was called exactly once
     verify(service, times(1)).findAll(any(), any(), any(), any());
@@ -166,7 +166,7 @@ class StudentControllerTest {
     studentProjection.setFirstName("John");
 
     // Stubbing the service method
-    when(service.findById(studentId)).thenReturn(studentProjection);
+    when(service.findByIdProjection(studentId)).thenReturn(studentProjection);
 
     // Perform GET request to retrieve student by ID
     ResultActions result =
@@ -183,6 +183,34 @@ class StudentControllerTest {
         .andExpect(jsonPath("$.firstName").value(studentProjection.getFirstName()));
 
     // Verify that service method was called once with correct ID argument
-    verify(service).findById(eq(studentId));
+    verify(service).findByIdProjection(eq(studentId));
+  }
+
+  @Test
+  void unbind() throws Exception {
+    // Mock master ID and IDs to be unbound
+    Long masterId = 1L;
+    List<Long> idsToUnbind = Arrays.asList(2L, 3L);
+
+    // Mocking service method
+    doNothing().when(service).unbindAll(masterId, idsToUnbind);
+
+    // Convert IDs to JSON
+    ObjectMapper objectMapper = new ObjectMapper();
+    String idsJson = objectMapper.writeValueAsString(idsToUnbind);
+
+    // Perform DELETE request to unbind students
+    ResultActions result =
+            mockMvc.perform(
+                    MockMvcRequestBuilders.delete("/students/unbind")
+                            .param("masterId", String.valueOf(masterId))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(idsJson));
+
+    // Verify HTTP status
+    result.andExpect(status().isOk());
+
+    // Verify that service method was called once with correct arguments
+    verify(service).unbindAll(masterId, idsToUnbind);
   }
 }

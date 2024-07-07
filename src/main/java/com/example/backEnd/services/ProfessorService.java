@@ -11,6 +11,7 @@ import com.example.backEnd.models.Professor;
 import com.example.backEnd.models.QProfessor;
 import com.example.backEnd.models.projections.ProfessorProjection;
 import com.example.backEnd.repositories.ProfessorRepository;
+import com.example.backEnd.repositories.StudentRepository;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.StringPath;
 import jakarta.persistence.EntityManager;
@@ -44,14 +45,17 @@ public class ProfessorService extends AbstractMasterService<Professor, Professor
   }
 
   private final ProfessorRepository professorRepository;
+  private final StudentRepository studentRepository;
   private final ModelMapper modelMapper;
 
   public ProfessorService(
       EntityManager entityManager,
       ProfessorRepository professorRepository,
+      StudentRepository studentRepository,
       ModelMapper modelMapper) {
     super(qProfessor, entityManager, professorRepository, table, dependencyMap);
     this.professorRepository = professorRepository;
+    this.studentRepository = studentRepository;
     addMaster(
         STUDENT.toString(),
         MasterFilterType.EQUALS,
@@ -74,7 +78,7 @@ public class ProfessorService extends AbstractMasterService<Professor, Professor
   }
 
   @Transactional
-  public ProfessorProjection findById(Long id) {
+  public ProfessorProjection findByIdProjection(Long id) {
     var professor =
         professorRepository
             .findById(id)
@@ -83,6 +87,15 @@ public class ProfessorService extends AbstractMasterService<Professor, Professor
                     new EntityNotFoundException(
                         String.format("No %s found with id: %s", "Professor", id)));
     return modelMapper.map(professor, ProfessorProjection.class);
+  }
+
+  public Professor findById(Long id) {
+    return professorRepository
+        .findById(id)
+        .orElseThrow(
+            () ->
+                new EntityNotFoundException(
+                    String.format("No %s found with id: %s", "Professor", id)));
   }
 
   @Transactional
@@ -95,5 +108,13 @@ public class ProfessorService extends AbstractMasterService<Professor, Professor
   @Transactional
   public void removeAll(List<Long> ids) {
     professorRepository.deleteAllById(ids);
+  }
+
+  @Transactional
+  public void unbindAll(Long masterId, List<Long> ids) {
+    var professor = findById(masterId);
+    ids.stream()
+        .map(studentRepository::getReferenceById)
+        .forEach(student -> student.unbindProfessor(professor));
   }
 }

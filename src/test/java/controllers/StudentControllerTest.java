@@ -45,10 +45,35 @@ class StudentControllerTest {
   @Test
   void getAll() throws Exception {
     // Stubbing the service method
-    when(service.findAll(any(), any(), any(), any())).thenReturn(new DataTablesOutput<>());
+    DataTablesOutput<StudentProjection> output = new DataTablesOutput<>();
+    StudentProjection firstStudent = new StudentProjection();
+    firstStudent.setId(1L);
+    firstStudent.setFirstName("John");
+    firstStudent.setLastName("Doe");
+    StudentProjection secondStudent = new StudentProjection();
+    secondStudent.setId(2L);
+    secondStudent.setFirstName("Jane");
+    secondStudent.setLastName("Smith");
+    output.setData(Arrays.asList(firstStudent, secondStudent));
+    when(service.findAll(any(), any(), any(), any())).thenReturn(output);
 
     // Performing the mock MVC request
-    mockMvc.perform(get("/students/all")).andDo(print()).andExpect(status().isOk());
+    mockMvc
+            .perform(
+                    get("/students/all")
+                            .param("masterId", "1")
+                            .param("masterType", "type")
+                            .param("tableToggle", "true")
+                            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data", hasSize(2)))
+            .andExpect(jsonPath("$.data[0].id").value(firstStudent.getId()))
+            .andExpect(jsonPath("$.data[0].firstName").value(firstStudent.getFirstName()))
+            .andExpect(jsonPath("$.data[0].lastName").value(firstStudent.getLastName()))
+            .andExpect(jsonPath("$.data[1].id").value(secondStudent.getId()))
+            .andExpect(jsonPath("$.data[1].firstName").value(secondStudent.getFirstName()))
+            .andExpect(jsonPath("$.data[1].lastName").value(secondStudent.getLastName()));
 
     // Verifying that the service method was called exactly once
     verify(service, times(1)).findAll(any(), any(), any(), any());

@@ -28,8 +28,13 @@ public class ProfessorController {
 
   @GetMapping("/all")
   public ResponseEntity<DataTablesOutput<ProfessorProjection>> getAll(
+      @RequestParam(required = false) Long masterId,
+      @RequestParam(required = false) String masterType,
+      @RequestParam(required = false, defaultValue = "false") Boolean tableToggle,
       @Valid DataTablesInput input) {
-    return new ResponseEntity<>(professorService.findAll(null, null, false, input), HttpStatus.OK);
+
+    return new ResponseEntity<>(
+        professorService.findAll(masterId, masterType, tableToggle, input), HttpStatus.OK);
   }
 
   @GetMapping("/filter")

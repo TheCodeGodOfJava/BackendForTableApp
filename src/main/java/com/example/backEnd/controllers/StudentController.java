@@ -28,9 +28,14 @@ public class StudentController {
   }
 
   @GetMapping("/all")
-  public ResponseEntity<DataTablesOutput<StudentProjection>> getAll(@Valid DataTablesInput input) {
+  public ResponseEntity<DataTablesOutput<StudentProjection>> getAll(
+      @RequestParam(required = false) Long masterId,
+      @RequestParam(required = false) String masterType,
+      @RequestParam(required = false, defaultValue = "false") Boolean tableToggle,
+      @Valid DataTablesInput input) {
 
-    return new ResponseEntity<>(studentService.findAll(null, null, false, input), HttpStatus.OK);
+    return new ResponseEntity<>(
+        studentService.findAll(masterId, masterType, tableToggle, input), HttpStatus.OK);
   }
 
   @GetMapping("/filter")
@@ -38,15 +43,16 @@ public class StudentController {
       @RequestParam String field,
       @RequestParam String term,
       @RequestParam(required = false) String depAlias,
-      @RequestParam(required = false) String dep
-      ) {
+      @RequestParam(required = false) String dep) {
 
-    Collection<?> results = studentService.findByFieldAndTerm(null, null, field, term, depAlias, dep);
+    Collection<?> results =
+        studentService.findByFieldAndTerm(null, null, field, term, depAlias, dep);
     return ResponseEntity.ok(results);
   }
 
   @PostMapping("/save")
-  public ResponseEntity<StudentFormProjection> save(@RequestBody StudentFormProjection studentFormProjection) {
+  public ResponseEntity<StudentFormProjection> save(
+      @RequestBody StudentFormProjection studentFormProjection) {
     var projection = studentService.save(studentFormProjection);
     var optional = Optional.ofNullable(studentFormProjection);
     var httpStatus =

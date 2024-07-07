@@ -41,13 +41,52 @@ class ProfessorControllerTest {
     mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
   }
 
+//  @Test
+//  void getAll() throws Exception {
+//    // Stubbing the service method
+//    when(service.findAll(any(), any(), any(), any())).thenReturn(new DataTablesOutput<>());
+//
+//    // Performing the mock MVC request
+//    mockMvc.perform(get("/professors/all")).andDo(print()).andExpect(status().isOk());
+//
+//    // Verifying that the service method was called exactly once
+//    verify(service, times(1)).findAll(any(), any(), any(), any());
+//    verifyNoMoreInteractions(service);
+//  }
+
   @Test
   void getAll() throws Exception {
     // Stubbing the service method
-    when(service.findAll(any(), any(), any(), any())).thenReturn(new DataTablesOutput<>());
+    DataTablesOutput<ProfessorProjection> output = new DataTablesOutput<>();
+    ProfessorProjection firstProfessor = new ProfessorProjection();
+    firstProfessor.setId(1L);
+    firstProfessor.setFirstName("John");
+    firstProfessor.setLastName("Doe");
+    ProfessorProjection secondProfessor = new ProfessorProjection();
+    secondProfessor.setId(2L);
+    secondProfessor.setFirstName("Jane");
+    secondProfessor.setLastName("Smith");
+    List<ProfessorProjection> professors = Arrays.asList(firstProfessor, secondProfessor);
+    output.setData(professors);
+    when(service.findAll(any(), any(), any(), any())).thenReturn(output);
 
     // Performing the mock MVC request
-    mockMvc.perform(get("/professors/all")).andDo(print()).andExpect(status().isOk());
+    mockMvc
+            .perform(
+                    get("/professors/all")
+                            .param("masterId", "1")
+                            .param("masterType", "type")
+                            .param("tableToggle", "true")
+                            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data", hasSize(2)))
+            .andExpect(jsonPath("$.data[0].id").value(firstProfessor.getId()))
+            .andExpect(jsonPath("$.data[0].firstName").value(firstProfessor.getFirstName()))
+            .andExpect(jsonPath("$.data[0].lastName").value(firstProfessor.getLastName()))
+            .andExpect(jsonPath("$.data[1].id").value(secondProfessor.getId()))
+            .andExpect(jsonPath("$.data[1].firstName").value(secondProfessor.getFirstName()))
+            .andExpect(jsonPath("$.data[1].lastName").value(secondProfessor.getLastName()));
 
     // Verifying that the service method was called exactly once
     verify(service, times(1)).findAll(any(), any(), any(), any());

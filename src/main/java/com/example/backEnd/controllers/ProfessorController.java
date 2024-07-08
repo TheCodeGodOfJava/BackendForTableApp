@@ -70,4 +70,10 @@ public class ProfessorController {
     professorService.unbindAll(masterId, ids);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
+
+  @PostMapping("/bind")
+  public ResponseEntity<Void> bind(@RequestParam Long masterId, @RequestBody List<Long> ids) {
+    professorService.bindAll(masterId, ids);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
 }

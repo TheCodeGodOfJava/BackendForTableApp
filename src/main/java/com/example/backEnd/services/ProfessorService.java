@@ -115,4 +115,10 @@ public class ProfessorService extends AbstractMasterService<Professor, Professor
     var student = studentRepository.getReferenceById(masterId);
     ids.stream().map(professorRepository::getReferenceById).forEach(student::unbindProfessor);
   }
+
+  @Transactional
+  public void bindAll(Long masterId, List<Long> ids) {
+    var student = studentRepository.getReferenceById(masterId);
+    ids.stream().map(professorRepository::getReferenceById).forEach(student::bindProfessor);
+  }
 }

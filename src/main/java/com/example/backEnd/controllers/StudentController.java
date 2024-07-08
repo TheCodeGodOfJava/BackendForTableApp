@@ -71,4 +71,10 @@ public class StudentController {
     studentService.unbindAll(masterId, ids);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
+
+  @PostMapping("/bind")
+  public ResponseEntity<Void> bind(@RequestParam Long masterId, @RequestBody List<Long> ids) {
+    studentService.bindAll(masterId, ids);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
 }

@@ -64,7 +64,7 @@ public abstract class AbstractMasterFilterService<T> {
   }
 
   public Collection<?> findByFieldAndTerm(
-      Long masterId, String masterType, String field, String term, String depAlias, String dep) {
-    return filterService.findByFieldAndTerm(masterType, masterId, field, term, depAlias, dep);
+      Long masterId, String masterType, String field, String term, String depAlias, String dep, boolean tableToggle) {
+    return filterService.findByFieldAndTerm(masterType, masterId, field, term, depAlias, dep, tableToggle);
   }
 }

@@ -86,7 +86,7 @@ class StudentControllerTest {
     String term = "John";
 
     // Stubbing the service method
-    when(service.findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any()))
+    when(service.findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any(), eq(false)))
         .thenReturn(Collections.emptyList());
 
     // Performing the mock MVC request
@@ -97,7 +97,7 @@ class StudentControllerTest {
         .andExpect(jsonPath("$", hasSize(0))); // Expecting an empty list
 
     // Verifying that the service method was called exactly once
-    verify(service, times(1)).findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any());
+    verify(service, times(1)).findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any(), eq(false));
     verifyNoMoreInteractions(service);
   }
 

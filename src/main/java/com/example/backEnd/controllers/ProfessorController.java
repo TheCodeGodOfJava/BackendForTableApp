@@ -42,10 +42,11 @@ public class ProfessorController {
       @RequestParam String field,
       @RequestParam String term,
       @RequestParam(required = false) String depAlias,
-      @RequestParam(required = false) String dep) {
+      @RequestParam(required = false) String dep,
+      @RequestParam(required = false, defaultValue = "false") boolean tableToggle) {
 
     Collection<?> results =
-        professorService.findByFieldAndTerm(null, null, field, term, depAlias, dep);
+        professorService.findByFieldAndTerm(null, null, field, term, depAlias, dep, tableToggle);
     return ResponseEntity.ok(results);
   }
 

@@ -40,11 +40,13 @@ public class BaseFilterService<T> extends AbstractDataService {
       String field,
       String term,
       String dependencyAlias,
-      String dependency) {
+      String dependency,
+      boolean tableToggle) {
 
     BooleanExpression exp = null;
     if (masterType != null && masterId != null && masterId != 0) {
-      var masterFilterType = fieldPathMap.get(field).getSecond();
+      var masterFilterType =
+          tableToggle ? MasterFilterType.NOT_EQUALS : fieldPathMap.get(field).getSecond();
       exp = getMasterExpression(masterType, masterId, masterFilterType);
     }
     return findByFieldAndTerm(field, term, dependencyAlias, dependency, exp);

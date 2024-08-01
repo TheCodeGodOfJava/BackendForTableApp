@@ -41,18 +41,18 @@ class ProfessorControllerTest {
     mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
   }
 
-//  @Test
-//  void getAll() throws Exception {
-//    // Stubbing the service method
-//    when(service.findAll(any(), any(), any(), any())).thenReturn(new DataTablesOutput<>());
-//
-//    // Performing the mock MVC request
-//    mockMvc.perform(get("/professors/all")).andDo(print()).andExpect(status().isOk());
-//
-//    // Verifying that the service method was called exactly once
-//    verify(service, times(1)).findAll(any(), any(), any(), any());
-//    verifyNoMoreInteractions(service);
-//  }
+  //  @Test
+  //  void getAll() throws Exception {
+  //    // Stubbing the service method
+  //    when(service.findAll(any(), any(), any(), any())).thenReturn(new DataTablesOutput<>());
+  //
+  //    // Performing the mock MVC request
+  //    mockMvc.perform(get("/professors/all")).andDo(print()).andExpect(status().isOk());
+  //
+  //    // Verifying that the service method was called exactly once
+  //    verify(service, times(1)).findAll(any(), any(), any(), any());
+  //    verifyNoMoreInteractions(service);
+  //  }
 
   @Test
   void getAll() throws Exception {
@@ -72,21 +72,21 @@ class ProfessorControllerTest {
 
     // Performing the mock MVC request
     mockMvc
-            .perform(
-                    get("/professors/all")
-                            .param("masterId", "1")
-                            .param("masterType", "type")
-                            .param("tableToggle", "true")
-                            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data", hasSize(2)))
-            .andExpect(jsonPath("$.data[0].id").value(firstProfessor.getId()))
-            .andExpect(jsonPath("$.data[0].firstName").value(firstProfessor.getFirstName()))
-            .andExpect(jsonPath("$.data[0].lastName").value(firstProfessor.getLastName()))
-            .andExpect(jsonPath("$.data[1].id").value(secondProfessor.getId()))
-            .andExpect(jsonPath("$.data[1].firstName").value(secondProfessor.getFirstName()))
-            .andExpect(jsonPath("$.data[1].lastName").value(secondProfessor.getLastName()));
+        .perform(
+            get("/professors/all")
+                .param("masterId", "1")
+                .param("masterType", "type")
+                .param("tableToggle", "true")
+                .contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data", hasSize(2)))
+        .andExpect(jsonPath("$.data[0].id").value(firstProfessor.getId()))
+        .andExpect(jsonPath("$.data[0].firstName").value(firstProfessor.getFirstName()))
+        .andExpect(jsonPath("$.data[0].lastName").value(firstProfessor.getLastName()))
+        .andExpect(jsonPath("$.data[1].id").value(secondProfessor.getId()))
+        .andExpect(jsonPath("$.data[1].firstName").value(secondProfessor.getFirstName()))
+        .andExpect(jsonPath("$.data[1].lastName").value(secondProfessor.getLastName()));
 
     // Verifying that the service method was called exactly once
     verify(service, times(1)).findAll(any(), any(), any(), any());
@@ -99,7 +99,7 @@ class ProfessorControllerTest {
     String term = "John";
 
     // Stubbing the service method
-    when(service.findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any()))
+    when(service.findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any(), eq(false)))
         .thenReturn(Collections.emptyList());
 
     // Performing the mock MVC request
@@ -110,7 +110,8 @@ class ProfessorControllerTest {
         .andExpect(jsonPath("$", hasSize(0))); // Expecting an empty list
 
     // Verifying that the service method was called exactly once
-    verify(service, times(1)).findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any());
+    verify(service, times(1))
+        .findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any(), eq(false));
     verifyNoMoreInteractions(service);
   }
 
@@ -214,11 +215,11 @@ class ProfessorControllerTest {
 
     // Perform DELETE request to unbind professors
     ResultActions result =
-            mockMvc.perform(
-                    MockMvcRequestBuilders.delete("/professors/unbind")
-                            .param("masterId", String.valueOf(masterId))
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(idsJson));
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/professors/unbind")
+                .param("masterId", String.valueOf(masterId))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(idsJson));
 
     // Verify HTTP status
     result.andExpect(status().isOk());

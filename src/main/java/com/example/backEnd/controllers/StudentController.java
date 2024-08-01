@@ -44,10 +44,12 @@ public class StudentController {
       @RequestParam String term,
       @RequestParam(required = false) String depAlias,
       @RequestParam(required = false) String dep,
+      @RequestParam(required = false) Long masterId,
+      @RequestParam(required = false) String masterType,
       @RequestParam(required = false, defaultValue = "false") boolean tableToggle) {
 
     Collection<?> results =
-        studentService.findByFieldAndTerm(null, null, field, term, depAlias, dep, tableToggle);
+        studentService.findByFieldAndTerm(masterId, masterType, field, term, depAlias, dep, tableToggle);
     return ResponseEntity.ok(results);
   }
 

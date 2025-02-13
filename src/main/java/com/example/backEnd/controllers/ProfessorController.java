@@ -4,6 +4,7 @@ import com.example.backEnd.datatables.mapping.DataTablesInput;
 import com.example.backEnd.datatables.mapping.DataTablesOutput;
 import com.example.backEnd.models.projections.ProfessorProjection;
 import com.example.backEnd.services.ProfessorService;
+import com.mysema.commons.lang.Pair;
 import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.List;
@@ -38,18 +39,20 @@ public class ProfessorController {
   }
 
   @GetMapping("/filter")
-  public ResponseEntity<Collection<?>> searchByTermAndField(
+  public ResponseEntity<Pair<?, Collection<?>>> searchByTermAndField(
       @RequestParam String field,
       @RequestParam String term,
       @RequestParam(required = false) String depAlias,
       @RequestParam(required = false) String dep,
       @RequestParam(required = false) Long masterId,
       @RequestParam(required = false) String masterType,
-      @RequestParam(required = false, defaultValue = "false") boolean tableToggle) {
+      @RequestParam(required = false, defaultValue = "false") boolean tableToggle,
+      @RequestParam(required = false) Long pageSize,
+      @RequestParam(required = false) Long currentPage) {
 
-    Collection<?> results =
+    Pair<?, Collection<?>> results =
         professorService.findByFieldAndTerm(
-            masterId, masterType, field, term, depAlias, dep, tableToggle);
+            masterId, masterType, field, term, depAlias, dep, tableToggle, pageSize, currentPage);
     return ResponseEntity.ok(results);
   }
 

@@ -1,5 +1,6 @@
 package com.example.backEnd.datatables.filter;
 
+import com.mysema.commons.lang.Pair;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Expression;
@@ -58,13 +59,17 @@ public abstract class AbstractMasterFilterService<T> {
     this.filterService.addFieldPath(fieldName, fieldPath, masterFilterType, constructorExpression);
   }
 
-  public Collection<?> findByFieldAndTerm(
-      String field, String term, String depAlias, String dep, BooleanExpression exp) {
-    return filterService.findByFieldAndTerm(field, term, depAlias, dep, exp);
-  }
-
-  public Collection<?> findByFieldAndTerm(
-      Long masterId, String masterType, String field, String term, String depAlias, String dep, boolean tableToggle) {
-    return filterService.findByFieldAndTerm(masterType, masterId, field, term, depAlias, dep, tableToggle);
+  public Pair<?,Collection<?>> findByFieldAndTerm(
+      Long masterId,
+      String masterType,
+      String field,
+      String term,
+      String depAlias,
+      String dep,
+      boolean tableToggle,
+      Long pageSize,
+      Long currentPage) {
+    return filterService.findByFieldAndTerm(
+        masterType, masterId, field, term, depAlias, dep, tableToggle, pageSize, currentPage);
   }
 }

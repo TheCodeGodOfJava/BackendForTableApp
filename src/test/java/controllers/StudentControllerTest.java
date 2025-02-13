@@ -13,6 +13,7 @@ import com.example.backEnd.models.projections.StudentFormProjection;
 import com.example.backEnd.models.projections.StudentProjection;
 import com.example.backEnd.services.StudentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysema.commons.lang.Pair;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -86,18 +87,22 @@ class StudentControllerTest {
     String term = "John";
 
     // Stubbing the service method
-    when(service.findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any(), eq(false)))
-        .thenReturn(Collections.emptyList());
+    doReturn(Pair.of(0L, Collections.emptyList()))
+        .when(service)
+        .findByFieldAndTerm(
+            any(), any(), eq(field), eq(term), any(), any(), eq(false), any(), any());
 
     // Performing the mock MVC request
     mockMvc
         .perform(get("/students/filter").param("field", field).param("term", term))
         .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$", hasSize(0))); // Expecting an empty list
+        .andExpect(jsonPath("$.second", hasSize(0)));
 
     // Verifying that the service method was called exactly once
-    verify(service, times(1)).findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any(), eq(false));
+    verify(service, times(1))
+        .findByFieldAndTerm(
+            any(), any(), eq(field), eq(term), any(), any(), eq(false), any(), any());
     verifyNoMoreInteractions(service);
   }
 
@@ -201,11 +206,11 @@ class StudentControllerTest {
 
     // Perform DELETE request to unbind students
     ResultActions result =
-            mockMvc.perform(
-                    MockMvcRequestBuilders.delete("/students/unbind")
-                            .param("masterId", String.valueOf(masterId))
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(idsJson));
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/students/unbind")
+                .param("masterId", String.valueOf(masterId))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(idsJson));
 
     // Verify HTTP status
     result.andExpect(status().isOk());

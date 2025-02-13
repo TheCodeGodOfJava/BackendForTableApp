@@ -12,6 +12,7 @@ import com.example.backEnd.datatables.mapping.DataTablesOutput;
 import com.example.backEnd.models.projections.ProfessorProjection;
 import com.example.backEnd.services.ProfessorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysema.commons.lang.Pair;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -40,19 +41,6 @@ class ProfessorControllerTest {
   public void init() {
     mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
   }
-
-  //  @Test
-  //  void getAll() throws Exception {
-  //    // Stubbing the service method
-  //    when(service.findAll(any(), any(), any(), any())).thenReturn(new DataTablesOutput<>());
-  //
-  //    // Performing the mock MVC request
-  //    mockMvc.perform(get("/professors/all")).andDo(print()).andExpect(status().isOk());
-  //
-  //    // Verifying that the service method was called exactly once
-  //    verify(service, times(1)).findAll(any(), any(), any(), any());
-  //    verifyNoMoreInteractions(service);
-  //  }
 
   @Test
   void getAll() throws Exception {
@@ -99,19 +87,22 @@ class ProfessorControllerTest {
     String term = "John";
 
     // Stubbing the service method
-    when(service.findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any(), eq(false)))
-        .thenReturn(Collections.emptyList());
+    doReturn(Pair.of(0L, Collections.emptyList()))
+        .when(service)
+        .findByFieldAndTerm(
+            any(), any(), eq(field), eq(term), any(), any(), eq(false), any(), any());
 
     // Performing the mock MVC request
     mockMvc
         .perform(get("/professors/filter").param("field", field).param("term", term))
         .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$", hasSize(0))); // Expecting an empty list
+        .andExpect(jsonPath("$.second", hasSize(0)));
 
     // Verifying that the service method was called exactly once
     verify(service, times(1))
-        .findByFieldAndTerm(any(), any(), eq(field), eq(term), any(), any(), eq(false));
+        .findByFieldAndTerm(
+            any(), any(), eq(field), eq(term), any(), any(), eq(false), any(), any());
     verifyNoMoreInteractions(service);
   }
 

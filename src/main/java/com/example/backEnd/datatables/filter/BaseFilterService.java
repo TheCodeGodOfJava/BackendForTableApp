@@ -6,8 +6,10 @@ import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.Collection;
@@ -34,14 +36,16 @@ public class BaseFilterService<T> extends AbstractDataService {
     this.entityJoins = entityJoins;
   }
 
-  public Collection<?> findByFieldAndTerm(
+  public Pair<?, Collection<?>> findByFieldAndTerm(
       String masterType,
       Long masterId,
       String field,
       String term,
       String dependencyAlias,
       String dependency,
-      boolean tableToggle) {
+      boolean tableToggle,
+      Long pageSize,
+      Long currentPage) {
 
     BooleanExpression exp = null;
     if (masterType != null && masterId != null && masterId != 0) {
@@ -49,19 +53,53 @@ public class BaseFilterService<T> extends AbstractDataService {
           tableToggle ? MasterFilterType.NOT_EQUALS : fieldPathMap.get(field).getSecond();
       exp = getMasterExpression(masterType, masterId, masterFilterType);
     }
-    return findByFieldAndTerm(field, term, dependencyAlias, dependency, exp);
+    return findByFieldAndTerm(field, term, dependencyAlias, dependency, pageSize, currentPage, exp);
   }
 
-  public Collection<?> findByFieldAndTerm(
-      String field, String term, String dependencyAlias, String dependency, Predicate exp) {
+  public Pair<?, Collection<?>> findByFieldAndTerm(
+      String field,
+      String term,
+      String dependencyAlias,
+      String dependency,
+      Long pageSize,
+      Long currentPage,
+      Predicate exp) {
 
     var fieldPath = fieldPathMap.get(field).getFirst();
+    var finalQuery = getFinalQuery(field, fieldPath, term, exp, dependencyAlias, dependency, false);
+    if (currentPage >= 0) {
+      finalQuery = finalQuery.limit(pageSize).offset(currentPage * pageSize);
+    }
+    var countQuery = getFinalQuery(field, fieldPath, term, exp, dependencyAlias, dependency, true);
+    return new Pair<>(countQuery.fetchOne(), finalQuery.fetch());
+  }
+
+  private JPAQuery<?> getFinalQuery(
+      String field,
+      Expression<?> fieldPath,
+      String term,
+      Predicate exp,
+      String dependencyAlias,
+      String dependency,
+      boolean isCountQuery) {
+
+    Expression<?> expression;
+    if (isCountQuery) {
+      expression = Expressions.numberTemplate(Long.class, "count(distinct {0})", fieldPath);
+    } else {
+      expression = getSelectExpression(field);
+    }
 
     var query =
         new JPAQueryFactory(super.getEntityManager())
-            .select(getSelectExpression(field))
+            .select(expression)
             .distinct()
             .from(entityPath);
+
+    if (!isCountQuery) {
+      query.orderBy(((ComparableExpressionBase<?>) fieldPath).asc());
+    }
+
     for (var join : entityJoins) {
       query = query.join(join);
     }
@@ -70,8 +108,7 @@ public class BaseFilterService<T> extends AbstractDataService {
         Expressions.stringTemplate("CAST({0} AS string)", fieldPath)
             .like("%" + term + "%")
             .and(exp);
-
-    return query.where(addDependencyCase(whereExp, dependencyAlias, dependency)).fetch();
+    return query.where(addDependencyCase(whereExp, dependencyAlias, dependency));
   }
 
   private BooleanExpression addDependencyCase(

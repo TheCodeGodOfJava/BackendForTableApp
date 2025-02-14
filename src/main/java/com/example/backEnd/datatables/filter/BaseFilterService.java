@@ -83,32 +83,44 @@ public class BaseFilterService<T> extends AbstractDataService {
       String dependency,
       boolean isCountQuery) {
 
-    Expression<?> expression;
-    if (isCountQuery) {
-      expression = Expressions.numberTemplate(Long.class, "count(distinct {0})", fieldPath);
-    } else {
-      expression = getSelectExpression(field);
-    }
+    Expression<?> expression = getQueryExpression(field, fieldPath, isCountQuery);
+    JPAQuery<?> query = initializeQuery(expression, fieldPath, isCountQuery);
 
+    BooleanExpression whereExp = buildWhereExpression(fieldPath, term, exp);
+    return query.where(addDependencyCase(whereExp, dependencyAlias, dependency));
+  }
+
+  private Expression<?> getQueryExpression(
+      String field, Expression<?> fieldPath, boolean isCountQuery) {
+    return isCountQuery
+        ? Expressions.numberTemplate(Long.class, "count(distinct {0})", fieldPath)
+        : getSelectExpression(field);
+  }
+
+  private JPAQuery<?> initializeQuery(
+      Expression<?> expression, Expression<?> fieldPath, boolean isCountQuery) {
     var query =
         new JPAQueryFactory(super.getEntityManager())
             .select(expression)
             .distinct()
             .from(entityPath);
 
+    for (var join : entityJoins) {
+      query.join(join);
+    }
+
     if (!isCountQuery) {
       query.orderBy(((ComparableExpressionBase<?>) fieldPath).asc());
     }
 
-    for (var join : entityJoins) {
-      query = query.join(join);
-    }
+    return query;
+  }
 
-    BooleanExpression whereExp =
-        Expressions.stringTemplate("CAST({0} AS string)", fieldPath)
-            .like("%" + term + "%")
-            .and(exp);
-    return query.where(addDependencyCase(whereExp, dependencyAlias, dependency));
+  private BooleanExpression buildWhereExpression(
+      Expression<?> fieldPath, String term, Predicate exp) {
+    return Expressions.stringTemplate("CAST({0} AS string)", fieldPath)
+        .like("%" + term + "%")
+        .and(exp);
   }
 
   private BooleanExpression addDependencyCase(

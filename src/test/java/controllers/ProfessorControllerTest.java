@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysema.commons.lang.Pair;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,7 +91,7 @@ class ProfessorControllerTest {
     doReturn(Pair.of(0L, Collections.emptyList()))
         .when(service)
         .findByFieldAndTerm(
-            any(), any(), eq(field), eq(term), any(), any(), eq(false), any(), any());
+            any(), any(), eq(field), eq(term), anyMap(), eq(false), any(), any());
 
     // Performing the mock MVC request
     mockMvc
@@ -102,7 +103,7 @@ class ProfessorControllerTest {
     // Verifying that the service method was called exactly once
     verify(service, times(1))
         .findByFieldAndTerm(
-            any(), any(), eq(field), eq(term), any(), any(), eq(false), any(), any());
+            any(), any(), eq(field), eq(term), anyMap(), eq(false), any(), any());
     verifyNoMoreInteractions(service);
   }
 

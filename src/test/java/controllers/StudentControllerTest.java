@@ -89,8 +89,7 @@ class StudentControllerTest {
     // Stubbing the service method
     doReturn(Pair.of(0L, Collections.emptyList()))
         .when(service)
-        .findByFieldAndTerm(
-            any(), any(), eq(field), eq(term), any(), any(), eq(false), any(), any());
+        .findByFieldAndTerm(any(), any(), eq(field), eq(term), anyMap(), eq(false), any(), any());
 
     // Performing the mock MVC request
     mockMvc
@@ -101,8 +100,7 @@ class StudentControllerTest {
 
     // Verifying that the service method was called exactly once
     verify(service, times(1))
-        .findByFieldAndTerm(
-            any(), any(), eq(field), eq(term), any(), any(), eq(false), any(), any());
+        .findByFieldAndTerm(any(), any(), eq(field), eq(term), anyMap(), eq(false), any(), any());
     verifyNoMoreInteractions(service);
   }
 

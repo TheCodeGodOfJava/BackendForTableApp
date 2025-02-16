@@ -105,6 +105,35 @@ class StudentControllerTest {
   }
 
   @Test
+  void getParentSelectValue_ReturnsExpectedList() throws Exception {
+
+    String parentFieldAlias = "country";
+    String childFieldAlias = "city";
+    String childFieldValue = "New York";
+    List<String> mockResponse = List.of("USA", "Canada");
+
+    doReturn(mockResponse)
+            .when(service)
+            .getParentSelectValue(parentFieldAlias, childFieldAlias, childFieldValue);
+
+    mockMvc
+            .perform(
+                    get("/students/getParentSelectValue")
+                            .param("parentFieldAlias", parentFieldAlias)
+                            .param("childFieldAlias", childFieldAlias)
+                            .param("childFieldValue", childFieldValue))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(mockResponse.size()))
+            .andExpect(jsonPath("$[0]").value("USA"))
+            .andExpect(jsonPath("$[1]").value("Canada"));
+
+    // Verify the service method was called once
+    verify(service, times(1))
+            .getParentSelectValue(parentFieldAlias, childFieldAlias, childFieldValue);
+  }
+
+  @Test
   void save() throws Exception {
     // Mock student projection to be saved
     var studentProjection = new StudentFormProjection();

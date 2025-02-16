@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysema.commons.lang.Pair;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,8 +89,7 @@ class ProfessorControllerTest {
     // Stubbing the service method
     doReturn(Pair.of(0L, Collections.emptyList()))
         .when(service)
-        .findByFieldAndTerm(
-            any(), any(), eq(field), eq(term), anyMap(), eq(false), any(), any());
+        .findByFieldAndTerm(any(), any(), eq(field), eq(term), anyMap(), eq(false), any(), any());
 
     // Performing the mock MVC request
     mockMvc
@@ -102,9 +100,37 @@ class ProfessorControllerTest {
 
     // Verifying that the service method was called exactly once
     verify(service, times(1))
-        .findByFieldAndTerm(
-            any(), any(), eq(field), eq(term), anyMap(), eq(false), any(), any());
+        .findByFieldAndTerm(any(), any(), eq(field), eq(term), anyMap(), eq(false), any(), any());
     verifyNoMoreInteractions(service);
+  }
+
+  @Test
+  void getParentSelectValue_ReturnsExpectedList() throws Exception {
+
+    String parentFieldAlias = "country";
+    String childFieldAlias = "city";
+    String childFieldValue = "New York";
+    List<String> mockResponse = List.of("USA", "Canada");
+
+    doReturn(mockResponse)
+        .when(service)
+        .getParentSelectValue(parentFieldAlias, childFieldAlias, childFieldValue);
+
+    mockMvc
+        .perform(
+            get("/professors/getParentSelectValue")
+                .param("parentFieldAlias", parentFieldAlias)
+                .param("childFieldAlias", childFieldAlias)
+                .param("childFieldValue", childFieldValue))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(mockResponse.size()))
+        .andExpect(jsonPath("$[0]").value("USA"))
+        .andExpect(jsonPath("$[1]").value("Canada"));
+
+    // Verify the service method was called once
+    verify(service, times(1))
+        .getParentSelectValue(parentFieldAlias, childFieldAlias, childFieldValue);
   }
 
   @Test

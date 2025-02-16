@@ -14,6 +14,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BaseFilterService<T> extends AbstractDataService {
@@ -23,16 +24,11 @@ public class BaseFilterService<T> extends AbstractDataService {
   private final Map<String, Pair<Expression<?>, MasterFilterType>> fieldPathMap = new HashMap<>();
   private final Map<String, ConstructorExpression<?>> fieldPathWithConstructorsMap =
       new HashMap<>();
-  private final Map<String, StringPath> dependencyMap;
 
   public BaseFilterService(
-      EntityPath<T> entityPath,
-      EntityManager entityManager,
-      Map<String, StringPath> dependencyMap,
-      EntityPath<?>... entityJoins) {
+      EntityPath<T> entityPath, EntityManager entityManager, EntityPath<?>... entityJoins) {
     super(entityManager);
     this.entityPath = entityPath;
-    this.dependencyMap = dependencyMap;
     this.entityJoins = entityJoins;
   }
 
@@ -41,8 +37,7 @@ public class BaseFilterService<T> extends AbstractDataService {
       Long masterId,
       String field,
       String term,
-      String dependencyAlias,
-      String dependency,
+      Map<String, String> dependencies,
       boolean tableToggle,
       Long pageSize,
       Long currentPage) {
@@ -53,24 +48,36 @@ public class BaseFilterService<T> extends AbstractDataService {
           tableToggle ? MasterFilterType.NOT_EQUALS : fieldPathMap.get(field).getSecond();
       exp = getMasterExpression(masterType, masterId, masterFilterType);
     }
-    return findByFieldAndTerm(field, term, dependencyAlias, dependency, pageSize, currentPage, exp);
+    return findByFieldAndTerm(field, term, dependencies, pageSize, currentPage, exp);
+  }
+
+  public List<?> getParentSelectValue(String parentField, String childField, String childValue) {
+    var parentFieldPath = fieldPathMap.get(parentField).getFirst();
+
+    var query =
+        new JPAQueryFactory(super.getEntityManager())
+            .select(parentFieldPath)
+            .distinct()
+            .from(entityPath)
+            .where(Expressions.stringPath(childField).eq(childValue));
+
+    return query.fetch();
   }
 
   public Pair<?, Collection<?>> findByFieldAndTerm(
       String field,
       String term,
-      String dependencyAlias,
-      String dependency,
+      Map<String, String> dependencies,
       Long pageSize,
       Long currentPage,
       Predicate exp) {
 
     var fieldPath = fieldPathMap.get(field).getFirst();
-    var finalQuery = getFinalQuery(field, fieldPath, term, exp, dependencyAlias, dependency, false);
+    var finalQuery = getFinalQuery(field, fieldPath, term, exp, dependencies, false);
     if (currentPage >= 0) {
       finalQuery = finalQuery.limit(pageSize).offset(currentPage * pageSize);
     }
-    var countQuery = getFinalQuery(field, fieldPath, term, exp, dependencyAlias, dependency, true);
+    var countQuery = getFinalQuery(field, fieldPath, term, exp, dependencies, true);
     return new Pair<>(countQuery.fetchOne(), finalQuery.fetch());
   }
 
@@ -79,15 +86,14 @@ public class BaseFilterService<T> extends AbstractDataService {
       Expression<?> fieldPath,
       String term,
       Predicate exp,
-      String dependencyAlias,
-      String dependency,
+      Map<String, String> dependencies,
       boolean isCountQuery) {
 
     Expression<?> expression = getQueryExpression(field, fieldPath, isCountQuery);
     JPAQuery<?> query = initializeQuery(expression, fieldPath, isCountQuery);
 
     BooleanExpression whereExp = buildWhereExpression(fieldPath, term, exp);
-    return query.where(addDependencyCase(whereExp, dependencyAlias, dependency));
+    return query.where(addDependencyCase(whereExp, dependencies));
   }
 
   private Expression<?> getQueryExpression(
@@ -124,12 +130,10 @@ public class BaseFilterService<T> extends AbstractDataService {
   }
 
   private BooleanExpression addDependencyCase(
-      BooleanExpression exp, String dependencyAlias, String dependency) {
-    if (this.dependencyMap != null) {
-      StringPath dependencyPath = this.dependencyMap.get(dependencyAlias);
-      if (dependencyPath != null && dependency != null) {
-        exp = exp.and(dependencyPath.eq(dependency));
-      }
+      BooleanExpression exp, Map<String, String> dependencies) {
+    for (Map.Entry<String, String> entry : dependencies.entrySet()) {
+      StringPath dependencyPath = Expressions.stringPath(entry.getKey());
+      exp = exp.and(dependencyPath.eq(entry.getValue()));
     }
     return exp;
   }

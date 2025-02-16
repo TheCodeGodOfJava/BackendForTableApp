@@ -10,15 +10,11 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
-import java.util.Map;
 import java.util.function.Function;
 
 public abstract class AbstractMasterService<T, P> extends AbstractMasterFilterService<T> {
-
-  public static final String DOESNT_EXIST_MESSAGE = "%s with id: %s does not exist";
 
   private final BaseFindService<T, P> findService;
   private final EntityPath<?>[] entityJoins;
@@ -31,19 +27,6 @@ public abstract class AbstractMasterService<T, P> extends AbstractMasterFilterSe
       EntityPath<?>... entityJoins) {
 
     super(entityPath, entityManager);
-    findService = new BaseFindService<>(repository, table, entityManager);
-    this.entityJoins = entityJoins;
-  }
-
-  public AbstractMasterService(
-      EntityPath<T> entityPath,
-      EntityManager entityManager,
-      QDataTablesRepository<T, Long> repository,
-      ExpressionTypeAlias table,
-      Map<String, StringPath> dependencyMap,
-      EntityPath<?>... entityJoins) {
-
-    super(entityPath, entityManager, dependencyMap);
     findService = new BaseFindService<>(repository, table, entityManager);
     this.entityJoins = entityJoins;
   }

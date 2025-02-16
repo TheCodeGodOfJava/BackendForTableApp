@@ -32,7 +32,6 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
 
   private static final ExpressionTypeAlias table;
   private static final QStudent qStudent = QStudent.student;
-  private static final Map<String, StringPath> dependencyMap = new HashMap<>();
 
   static {
     Map<String, Pair<Expression<?>, ColumnValueType>> map = new HashMap<>();
@@ -47,9 +46,6 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
     map.put("state", Pair.of(qStudent.state, STR));
     map.put("city", Pair.of(qStudent.city, STR));
     table = new ExpressionTypeAlias(map, StudentProjection.class);
-
-    dependencyMap.put("state", qStudent.state);
-    dependencyMap.put("country", qStudent.country);
   }
 
   private final StudentRepository studentRepository;
@@ -61,7 +57,7 @@ public class StudentService extends AbstractMasterService<Student, StudentProjec
       StudentRepository studentRepository,
       ProfessorRepository professorRepository,
       ModelMapper modelMapper) {
-    super(qStudent, entityManager, studentRepository, table, dependencyMap);
+    super(qStudent, entityManager, studentRepository, table);
     this.studentRepository = studentRepository;
     this.professorRepository = professorRepository;
     addMaster(

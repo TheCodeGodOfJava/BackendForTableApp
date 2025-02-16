@@ -31,7 +31,6 @@ public class ProfessorService extends AbstractMasterService<Professor, Professor
 
   private static final ExpressionTypeAlias table;
   private static final QProfessor qProfessor = QProfessor.professor;
-  private static final Map<String, StringPath> dependencyMap = new HashMap<>();
 
   static {
     Map<String, Pair<Expression<?>, ColumnValueType>> map = new HashMap<>();
@@ -53,7 +52,7 @@ public class ProfessorService extends AbstractMasterService<Professor, Professor
       ProfessorRepository professorRepository,
       StudentRepository studentRepository,
       ModelMapper modelMapper) {
-    super(qProfessor, entityManager, professorRepository, table, dependencyMap);
+    super(qProfessor, entityManager, professorRepository, table);
     this.professorRepository = professorRepository;
     this.studentRepository = studentRepository;
     addMaster(

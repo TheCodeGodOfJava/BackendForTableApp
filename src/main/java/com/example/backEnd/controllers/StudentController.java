@@ -7,9 +7,7 @@ import com.example.backEnd.models.projections.StudentProjection;
 import com.example.backEnd.services.StudentService;
 import com.mysema.commons.lang.Pair;
 import jakarta.validation.Valid;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,18 +41,37 @@ public class StudentController {
   public ResponseEntity<Pair<?, Collection<?>>> searchByTermAndField(
       @RequestParam String field,
       @RequestParam String term,
-      @RequestParam(required = false) String depAlias,
-      @RequestParam(required = false) String dep,
+      @RequestParam(required = false) String[] depAliases,
+      @RequestParam(required = false) String[] deps,
       @RequestParam(required = false) Long masterId,
       @RequestParam(required = false) String masterType,
       @RequestParam(required = false, defaultValue = "false") boolean tableToggle,
       @RequestParam(required = false) Long pageSize,
       @RequestParam(required = false) Long currentPage) {
 
+    Map<String, String> dependencies = new HashMap<>();
+    if (depAliases != null && deps != null) {
+      for (int i = 0; i < depAliases.length; i++) {
+        dependencies.put(depAliases[i], deps[i]);
+      }
+    }
+
     Pair<?, Collection<?>> results =
         studentService.findByFieldAndTerm(
-            masterId, masterType, field, term, depAlias, dep, tableToggle, pageSize, currentPage);
+            masterId, masterType, field, term, dependencies, tableToggle, pageSize, currentPage);
     return ResponseEntity.ok(results);
+  }
+
+  @GetMapping("/getParentSelectValue")
+  public ResponseEntity<List<?>> getParentSelectValue(
+      @RequestParam String parentFieldAlias,
+      @RequestParam String childFieldAlias,
+      @RequestParam String childFieldValue) {
+
+    List<?> result =
+        studentService.getParentSelectValue(parentFieldAlias, childFieldAlias, childFieldValue);
+
+    return ResponseEntity.ok(result);
   }
 
   @PostMapping("/save")

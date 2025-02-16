@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.StringPath;
 import jakarta.persistence.EntityManager;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -16,17 +17,11 @@ public abstract class AbstractMasterFilterService<T> {
   private final BaseFilterService<T> filterService;
 
   public AbstractMasterFilterService(
-      EntityPath<T> entityPath, EntityManager entityManager, EntityPath<?>... entityJoins) {
-    this.filterService = new BaseFilterService<>(entityPath, entityManager, null, entityJoins);
-  }
-
-  public AbstractMasterFilterService(
       EntityPath<T> entityPath,
       EntityManager entityManager,
-      Map<String, StringPath> dependencyMap,
       EntityPath<?>... entityJoins) {
     this.filterService =
-        new BaseFilterService<>(entityPath, entityManager, dependencyMap, entityJoins);
+        new BaseFilterService<>(entityPath, entityManager, entityJoins);
   }
 
   public void addMaster(
@@ -59,17 +54,20 @@ public abstract class AbstractMasterFilterService<T> {
     this.filterService.addFieldPath(fieldName, fieldPath, masterFilterType, constructorExpression);
   }
 
-  public Pair<?,Collection<?>> findByFieldAndTerm(
+  public Pair<?, Collection<?>> findByFieldAndTerm(
       Long masterId,
       String masterType,
       String field,
       String term,
-      String depAlias,
-      String dep,
+      Map<String, String> dependencies,
       boolean tableToggle,
       Long pageSize,
       Long currentPage) {
     return filterService.findByFieldAndTerm(
-        masterType, masterId, field, term, depAlias, dep, tableToggle, pageSize, currentPage);
+        masterType, masterId, field, term, dependencies, tableToggle, pageSize, currentPage);
+  }
+
+  public List<?> getParentSelectValue(String parentField, String childField, String childValue) {
+    return filterService.getParentSelectValue(parentField, childField, childValue);
   }
 }
